@@ -116,7 +116,9 @@ var xTigerUtils = xTigerUtils ? xTigerUtils : {
 				var rext = new RegExp("\\s?([^\\s]*)\\s0.*DIRECTORY", "mg");  // regexp to match folder names 
 				var m;
 				while ((m = rext.exec(list)) != null) {
+					if (m[1].charAt(0) != '.') { // remove "hidden" folders such as ".svn"
 						res.push(m[1]);
+					}
 				}	
 			}
 		return res;
