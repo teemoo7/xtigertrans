@@ -1,0 +1,123 @@
+/* 
+
+ Sample style sheet for viewing XTiger template documents transformed with xTigerTrans
+
+*/
+body {
+	min-width: 650px;
+}
+
+.component{
+	border-width:0px;
+	border-color:red;
+	border-style:solid;
+	padding: 2px;
+	margin-bottom:2px;
+}
+
+.componentName{
+	border-width:0px;
+	border-color:red;
+	border-style:solid;
+	background-color : red;
+	padding: 2px;
+	font-size:25;
+}
+
+
+.componentContent{
+	border-width:3px;
+	border-left-width:3px;
+	border-color:red;
+	border-style:solid;
+	padding: 2px;
+	margin-bottom:2px;
+}
+
+.option{
+	border-width:0px;
+	border-color:blue;
+	border-style:solid;
+	padding: 2px;
+	margin-bottom:2px;
+}
+
+
+.optionLabel {
+	border-width:0px;
+	border-color:blue;
+	border-style:solid;
+	padding: 2px;
+	background-color : blue;
+	font-size:25;
+}
+
+.optionContent{
+	border-width:3px;
+	border-left-width:3px;
+	border-color:blue;
+	border-style:solid;
+	padding: 2px;
+	margin-bottom:2px;
+}
+
+.use{
+	border-width: 0px;
+	border-left-width:2px;
+	border-color:green;
+	border-style:solid;
+	padding: 2px;
+	margin-bottom:2px;
+}
+
+.useLabel{
+	border-width:0px;
+	border-color:green;
+	border-style:solid;
+	padding: 2px;
+	font-size:25px;
+}
+
+.useContent{
+	border-width: 1px;
+	border-color:green;
+	border-style:solid;
+	padding: 2px;
+	margin-bottom:2px;
+}
+
+.repeat{
+	border-width:0px;
+	border-color:yellow;
+	border-style:solid;
+	padding: 2px;
+	margin-bottom:2px;
+}
+
+.repeatLabel {
+	border-width:0px;
+	border-color:yellow;
+	border-style:solid;
+	padding: 2px;
+	background-color : yellow;
+	font-size:25;
+}
+
+.repeatContent{
+	border-width:3px;
+	border-left-width:3px;
+	border-color:yellow;
+	border-style:solid;
+	padding: 2px;
+	margin-bottom:2px;
+}
+
+.string{
+color:green;
+}
+.boolean{
+color:green;
+}
+.number{
+color:green;
+}

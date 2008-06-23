@@ -1,0 +1,196 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:xt="http://wam.inrialpes.fr/xtiger" xml:lang="en">
+<head>
+  <title>University</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+  <meta name="description" content="university librairy"/>
+  <meta name="keywords" content="librairy university"/>
+  <meta name="template_class" content="amaya-cv-en-0.1"/>
+  
+    <style type="text/css">
+		*{
+			border:0px;
+			padding:0px;
+		}
+		
+		h1{
+			display:none;
+		}
+		
+		h2{
+			margin-top:0px;
+			margin-bottom:5px;
+			padding:5px;
+		}
+		
+		.name h2{
+			background-color:#E0824F;
+			color:#FFF;
+		}
+		
+
+		
+		.address h2{
+			display:none;
+		}
+		
+		.author{
+			margin-left:30px;
+			margin-right:30px;
+			clear:both;
+		}
+		
+
+		
+		.library{
+			border:1px solid #E0590F;
+		}
+		
+		.library h2{
+			background-color:#E0A17E;
+		}
+		
+		.publications{
+			margin:10px;
+		}
+		
+		.book_cover{
+			width:50px;
+			height:70px;
+			float:left;
+			border:1px dashed black;
+			margin:0px 5px 5px 5px;
+			text-align:center;
+		}
+		
+		.end{
+			clear:both;
+		}
+	</style>
+
+  
+
+</head>
+<body>
+	<div class="university">
+		<h1>University</h1>
+		<xt:component name="uni">
+			<div class="name">
+				<h2><xt:use types="string" label="uni_name">university_name</xt:use></h2>
+			</div>
+
+			<div class="address">
+				<h2>Address</h2>
+				<xt:use types="string" label="location">address</xt:use>
+			</div>
+			<div class="library">
+				<h2>Articles</h2>
+				<xt:repeat label="articles">
+
+					<xt:component name="article">
+						<div class="book_cover">
+							<i>cover</i>
+						</div>
+						<div class="article">
+							<div class="title">
+								Title : <xt:use types="string" label="title">title</xt:use>
+
+							</div>
+							<xt:component name="author">
+								<div class="author">
+									<h3>Author</h3>
+									<div class="name">
+									Name : <xt:use types="string" label="author_name">name</xt:use>
+									</div>
+
+									<xt:component name="address">
+										<div class="address">
+											<div class="city">
+												City : <xt:use types="string" label="city">city</xt:use>
+											</div>
+											<div class="state">
+												State : <xt:use types="string" label="state">state</xt:use>
+
+											</div>
+											<div class="zip">
+												Zip : <xt:use types="number" label="zip">0000</xt:use>
+											</div>
+										</div>
+									</xt:component>
+								</div>
+							</xt:component>
+
+						</div>
+					</xt:component>
+				</xt:repeat>
+				<h2>Journals</h2>
+				<xt:repeat label="journals">
+					
+					<xt:component name="journal">
+						<div class="book_cover">
+							<i>cover</i>
+
+						</div>
+						<div class="journal">
+							<div class="name">
+							Name : <xt:use types="string" label="name">journal name</xt:use>
+							</div>
+							<div class="editor">
+								Editor : <xt:use types="string" label="editor">editor name</xt:use>
+
+							</div>
+						</div>
+						<div class="end"></div>
+					</xt:component>
+				</xt:repeat>
+				<h2>Books</h2>
+				<xt:repeat label="books">
+					<xt:component name="book">
+
+						<div class="book_cover">
+							<i>cover</i>
+						</div>
+						<div class="book">
+							<div class="title">
+							Title : <xt:use types="string" label="title">title</xt:use>
+							</div>
+
+							<div class="price">
+								Price : <xt:use types="number" label="price">00.00</xt:use> Frs
+							</div>
+							<div class="publisher">
+								Publisher : <xt:use types="string" label="publisher">publisher</xt:use>
+							</div>
+							<div class="author">
+
+								<xt:component name="author">
+									<h3>Author</h3>
+									<div class="name">
+										Name : <xt:use types="string" label="author_name">name</xt:use>
+									</div>
+									<xt:component name="address">
+										<div class="address">
+
+											<div class="city">
+												City : <xt:use types="string" label="city">city</xt:use>
+											</div>
+											<div class="state">
+												State : <xt:use types="string" label="state">state</xt:use>
+											</div>
+											<div class="zip">
+
+												Zip : <xt:use types="number" label="zip">0000</xt:use>
+											</div>
+										</div>
+									</xt:component>
+								</xt:component>
+							</div>
+						</div>
+					</xt:component>
+
+				</xt:repeat>
+			</div>
+		</xt:component>
+	</div>
+</body>
+</html>

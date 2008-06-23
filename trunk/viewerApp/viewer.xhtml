@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- 	
+
+xTigerTrans viewerApp : viewer.xhtml
+
+Contributors:
+- Jonathan Wafellman (EPFL)
+- Stephane Sire (EPFL)
+
+-->
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:xt="http://wam.inrialpes.fr/xtiger" xml:lang="en">
+<head>
+	<title>xTigerTrans viewer application</title>
+	<link rel="stylesheet" href="viewer.css" type="text/css"></link>
+	<script type="text/javascript" src="../xtiger/xtigertrans.js"></script>
+	<script type="text/javascript" src="../xtiger/utilities.js"></script>
+	<script type="text/javascript" src="viewer.js"></script>
+	<script type="text/javascript">
+	   <![CDATA[
+		// Main controller	     
+		var controller;
+		var hooks = null;			
+		
+		function initializeMe () {
+			if (hooks) 	return;
+			hooks = {
+				'FORM_FIELD_ID' : document.getElementById('formUrl'),
+				'VIEW_SELECTOR_ID' : document.getElementById('transfosList'),
+				'TEMPLATE_SELECTOR_ID' : document.getElementById('templatesList'),
+				'TEMPLATE_FEEDBACK_ID' : document.getElementById('titleUrl'),
+				'FRAME_ID' : document.getElementById('container')
+			}			
+			controller = new viewerApp("../transformations", "../templates", hooks);
+		}
+		
+		function submitPage () {
+			var e = this.hooks['FORM_FIELD_ID'];
+			if (e.url.value != '') {
+				controller.startVisualization();
+				hooks['FRAME_ID'].addEventListener('load', frameLoaded, false);
+			}
+			return false; // prevent default action			
+		}
+
+		function frameLoaded () {
+			hooks['FRAME_ID'].removeEventListener('load', frameLoaded, false);
+			controller.continueVisualization();
+		}
+
+		function updateSelectedTemplate () {
+			controller.updateSelectedTemplate();
+		}
+		
+		function resetView () {
+			hooks['FRAME_ID'].setAttribute('src', 'intro.xhtml');
+		  	this.hooks['TEMPLATE_FEEDBACK_ID'].firstChild.nodeValue = '...';			
+		}
+	
+		window.addEventListener('load', initializeMe, false);
+		]]>
+	</script>
+</head>
+<body>
+	<div id="formular">
+	    <form id="formUrl" action="javascript:alert('Oops, something went wrong !')" onsubmit="return submitPage();">
+			<p>
+		        <label>Page : 
+					<input id='url' type='text' name='url' maxlength='100' value="" />
+				</label>
+		        <span style="position: absolute; right: 30px; margin-left: 5px"><input type='submit' value="Visualize"/><input type='reset' onclick='resetView()' /></span>
+			</p>
+			<p>
+		        <label>Page shortcut : 
+					<select id='templatesList' onchange='updateSelectedTemplate()'>
+					</select>
+				</label>		
+		        <label style="position: absolute; right: 30px">View with : 
+					<select id='transfosList'>
+					</select>
+				</label>		
+			</p>
+	        <p id="titleUrl">...</p>
+	    </form>
+	</div>
+    <iframe id="container" src="intro.xhtml">
+    </iframe>
+</body>
+</html>

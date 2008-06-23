@@ -1,0 +1,37 @@
+/* xTigerTrans viewerApp : viewer.css */
+
+body {
+	min-width: 650px;
+}
+
+#formular {
+  	background: lightgray;
+    margin: 0;
+    padding: 5px;
+		position: absolute;
+		top: 10px;
+		left: 10px;
+		right: 10px;
+}    
+
+#url {
+	width: 60%;
+}    
+
+#titleUrl {
+	text-align: center;
+}
+
+input {
+	margin-left: 10px;
+}
+
+#container {
+	border: none;
+	background: white;
+	position: absolute;
+	top: 8em;
+	left: 10px;
+	right: 10px;
+	bottom: 5px;
+}

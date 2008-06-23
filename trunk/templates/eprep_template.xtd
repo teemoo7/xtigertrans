@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+ xmlns:xt="http://ns.inria.org/xtiger" xml:lang="en" lang="en">
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+		<title>Template pour DIDACTIC -premiere reunion d une COP</title>
+		<xt:head version="0.8" templateVersion="1.0">
+			
+			<xt:component name="intention">
+				<xt:use label="intention_string" types="string"></xt:use>
+			</xt:component>
+			
+			<xt:component name="strategy">
+				<xt:use label="strategy_string" types="string"></xt:use>
+			</xt:component>
+			
+			<xt:component name="support">
+				<li><xt:use label="support_string" types="string"></xt:use></li>
+			</xt:component>
+			
+			<xt:component name="ressource">
+				<li><xt:use label="ressource_string" types="string"></xt:use></li>
+			</xt:component>
+			
+			<xt:component name="action">
+				<h2><xt:use label="action_title" types="string">Recording a History course at Lycée Henri IV</xt:use></h2>
+				<xt:use label="action_string" types="string"></xt:use>
+				<ul>
+					<xt:repeat label="supports">
+						<xt:use label="support" types="support"></xt:use>
+					</xt:repeat>
+				</ul>
+				The technical recording material   was:
+				<ul>
+					<xt:repeat label="ressources">
+						<xt:use label="ressource" types="ressource"></xt:use>
+					</xt:repeat>
+				</ul>
+			</xt:component>
+			
+		</xt:head>
+	</head>
+	<body>
+		<xt:component name="practice">
+			<div id="cop">
+				Cop <xt:use label="cop" types="string">cop name</xt:use>
+			</div>
+			<div id="author">
+				Author: <xt:use label="author" types="string">autor name</xt:use>
+			</div>
+			<h1><xt:use label="title" types="string">title</xt:use> at <xt:use label="with_who" types="string">with who</xt:use> in <xt:use label="where" types="string">where</xt:use> (<xt:use label="when" types="string">when</xt:use>)</h1>
+			<xt:repeat label="intentions">
+				<xt:use label="intention" types="intention"></xt:use>
+			</xt:repeat>
+			<xt:repeat label="strategies">
+				<xt:use label="strategy" types="strategy"></xt:use>
+			</xt:repeat>
+			<xt:repeat label="actions">
+				<xt:use label="action" types="action"></xt:use>
+			</xt:repeat>
+		</xt:component>
+	</body>
+</html>
