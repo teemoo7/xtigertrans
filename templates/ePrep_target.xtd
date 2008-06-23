@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+ xmlns:xt="http://wam.inrialpes.fr/xtiger" xml:lang="en" lang="en">
+	<head>
+		<title>Template pour DIDACTIC -premiere reunion d une COP</title>
+		
+		
+		<xt:head version="0.8" templateVersion="1.0">
+			<xt:component name="intention">
+				<div class="intention">
+					<div class="label">Intention :</div><div class="answer"><xt:use label="intention_string" types="string">one intention</xt:use></div>
+				</div>
+			</xt:component>
+			
+			<xt:component name="strategy">
+				<div class="strategy">
+					<div class="label">Strategy :</div><div class="answer"> <xt:use label="strategy_string" types="string">one strategy</xt:use></div>
+				</div>
+			</xt:component>
+			
+			<xt:component name="action">
+				<div class="action">
+					<div class="label">Action :</div><div class="answer"> <xt:use label="action_string" types="string">one action</xt:use></div>
+				</div>
+			</xt:component>
+			
+			<xt:component name="support">
+				<div class="support">
+					<div class="label">Support :</div><div class="answer"> <xt:use label="support_string" types="string">one support</xt:use></div>
+				</div>
+			</xt:component>
+			
+			<xt:component name="meaning">
+				<div class="meaning">
+					<div class="label">Meaning :</div><div class="answer"> <xt:use label="meaning_string" types="string">one meaning</xt:use></div>
+				</div>
+			</xt:component>
+			
+			<xt:component name="question">
+				<div class="question">
+					<div class="label">Question :</div><div class="answer"> <xt:use label="question_string" types="string">one question</xt:use></div>
+				</div>
+			</xt:component>
+			
+			<xt:component name="situation">
+							<p><span class="label">When :</span>
+							<span class="answer"><xt:use label="when" types="string">time</xt:use></span></p>
+
+							<p><span class="label">Where :</span>
+							<span class="answer"><xt:use label="where" types="string">location</xt:use></span></p>
+
+							<p><span class="label">With who :</span>
+							<span class="answer"><xt:use label="with_who" types="string">person</xt:use></span></p>
+
+							<div><p class="section">Intentions :</p> 
+							<div class="intentions">
+								<xt:repeat label="intentions">
+									<xt:use label="intention" types="intention"></xt:use>
+								</xt:repeat>
+							</div></div>
+
+							<div><p class="section">Strategies :</p> 
+							<div class="strategies">
+								<xt:repeat label="strategies">
+									<xt:use label="strategy" types="strategy"></xt:use>
+								</xt:repeat>
+							</div></div>
+
+
+							<div><p class="section">Actions :</p>
+							<div class="actions">
+								<xt:repeat label="actions">
+									<xt:use label="action" types="action"></xt:use>
+								</xt:repeat>
+							</div></div>
+
+							<div><p class="section">Supports :</p> 
+							<div class="supports">
+								<xt:repeat label="supports">
+									<xt:use label="support" types="support"></xt:use>
+								</xt:repeat>
+							</div></div>
+
+							<div><p class="section">Meanings :</p> 
+							<div class="meanings">
+								<xt:repeat label="meanings">
+									<xt:use label="meaning" types="meaning"></xt:use>
+								</xt:repeat>
+							</div></div>
+
+							<p><span class="label">Author :</span>
+							<span class="answer"><xt:use label="situation_author" types="string">person</xt:use></span></p>
+
+							<div><p class="section">Questions :</p> 
+							<div class="questions">
+								<xt:repeat label="questions">
+									<xt:use label="question" types="question"></xt:use>
+								</xt:repeat>
+							</div></div>
+
+							<p><span class="label">Problematic :</span>
+							<span class="answer">
+								<xt:use label="problematic_string" types="string"> explanation </xt:use>
+							</span></p>
+						</xt:component>
+			
+			<xt:component name="ressource">
+				<div class="ressource">
+					<div class="label">Ressource : </div>
+					<div class="answer"><xt:use label="ressource_string" types="string">one ressource</xt:use></div>
+				</div>
+			</xt:component>
+			
+			<xt:component name="question">
+				<div class="question">
+					<div class="label">Question : </div>
+					<div class="answer"><xt:use label="question_string" types="string">one question</xt:use></div>
+				</div>
+			</xt:component>
+			
+			<xt:component name="activity">
+				<h3>Activity</h3>
+				<div class="method">
+					<div class="label">Used Method : </div>
+					<div class="answer"><xt:use label="method" types="string">one method</xt:use></div>
+				</div>
+				<div class="precessus">
+					<div class="label">Processus : </div>
+					<div class="answer"><xt:use label="processus" types="string">processus description</xt:use></div>
+				</div>
+			</xt:component>
+			
+		</xt:head>
+	</head>
+	<body>
+		<h1><xt:use label="title" types="string">Treated Problematic</xt:use></h1>
+		<h2>Original Situation</h2>
+			<div id="original_situation">
+				<xt:repeat label="original_situations">
+					<xt:use label="situation" types="situation"></xt:use>
+				</xt:repeat>
+			</div>
+			
+		<h2>Similar Situations</h2>
+			<div id="similar_situations">
+				<xt:repeat label="similar_situations">
+					<xt:use label="situation" types="situation"></xt:use>
+				</xt:repeat>
+			</div>
+			
+		<h2>Questions</h2>
+			<div id="questions">
+				<xt:repeat label="questions">
+					<xt:use label="question" types="question"></xt:use>
+				</xt:repeat>
+			</div>
+		<h2>Activities</h2>
+			<div id="activities">
+				<xt:repeat label="activities">
+					<xt:use label="activity" types="activity"></xt:use>
+				</xt:repeat>
+			</div>
+		<h2>Ressources</h2>
+			<div id="ressources">
+				<xt:repeat label="ressources">
+					<xt:use label="ressource" types="ressource"></xt:use>
+				</xt:repeat>
+			</div>
+		<h2>New practices</h2>
+			<div id="new_practice">
+				<xt:repeat label="new_practice">
+					<xt:use label="practice" types="situation"></xt:use>
+				</xt:repeat>
+			</div>
+		<h2>Planification</h2>
+			<div class="label">Next Date : </div>
+			<div class="answer"><xt:use label="next_date" types="string">00/00/0000</xt:use></div><br/>
+		
+			<div class="label">Schedule : </div>
+			<div class="answer"><xt:use label="schedule" types="string">schedule</xt:use></div><br/>
+		
+			<div class="label">Cop : </div>
+			<div class="answer"><xt:use label="cop" types="string">cop name</xt:use></div><br/>
+		<h2>Document</h2>
+			<div class="label">Date : </div>
+			<div class="answer"><xt:use label="date" types="string">00/00/0000</xt:use></div><br/>
+		
+			<div class="label">Author : </div>
+			<div class="answer"><xt:use label="author" types="string">name</xt:use></div><br/>
+		
+			<div class="label">Cop : </div>
+			<div class="answer"><xt:use label="cop" types="string">cop name</xt:use></div><br/>
+	</body>
+</html>

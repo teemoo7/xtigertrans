@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<title>xTigerTrans Library Project</title>
+	<style>
+		body {
+			padding: 1em 2em;
+		}
+	</style>	
+</head>
+
+<body>
+	<h1>xTigerTrans Library Project</h1>
+	
+	<p>Home : <a href="http://xtigertrans.googlecode.com">http://xtigertrans.googlecode.com</a></p>
+
+	<h2>Presentation</h2>
+
+	<p>xTigerTrans is a (FireFox) Javascript library for client-side processing of
+	<a href="http://www.w3.org/Amaya/Templates/XTiger-spec.html">XTiger</a> template files.</p>
+
+	<p>This library has been developed in the framework of the <a href="http://palette.ercim.org"> 
+	PALETTE</a> research project. Its initial purpose is to quickly prototype some template views
+	to be implemented in template driven editing applications, such as 
+	<a href="http://docreuse.epfl.ch/">DocReuse</a>.</p>
+
+	<h2>viewerApp ou comment visualiser vos templates XTiger ?</h2>
+	
+	<p>Pour visualiser vos propres templates XTiger, mettez les (fichiers finissant en .xtd) dans
+	le répertoire "templates", puis ouvrez le fichier "viewerApp/viewer.xhtml" dans FireFox.
+	L'application construit un menu "Page shortcut" au démarrage pour sélectionnner tous les templates 
+	qui se trouvent dans le répertoire "templates".</p>
+	
+	<p>De même vous pouvez créer vos propres transformations (fichier index.xhtml) et les placer dans 
+ 	un sous-répertoire dans le répertoire "transformations", lu au démarrage.</p>	
+
+	<p>The library comes with a viewerApp application. You can try it to see some examples 
+	of template	visualizations. Launch it by opening the "viewerApp/viewer.xhtml" into Firefox.</p>	
+
+	<h2>Content of the package</h2>
+	
+	<pre>
+README.html      : this file
+docs/            : documentation files (currently Jonathan project reports)
+templates/       : default location for XTiger template files to visualize
+transformations/ : default location for transformations to apply to visualize templates, 
+                   each sub-folder must define the transformation in an "index.xhtml" file
+viewerApp/       : sample application to apply tranformations to templates (viewer.xhtml)
+xtiger/          : library Javascript code and utilities
+	</pre>		
+	
+	<h2>To be done</h2>	
+
+	<ul>
+	<li>Check that viewerApp also works on Windows (it has been tested on a Mac). 
+	There may be some differences in the way folders are listed	through the XHR 
+	call in "xtiger/utilities.js"</li>
+	<li>Add a proxy to the project so that viewerApp can also fetch template files to visualize
+	and transformations from remote servers if started behind a Web server</li>
+	</ul>
+
+	<h2>Credits</h2>	
+	
+	<p>The project was initiated by Jonathan Wafellman for a semester project at EPFL.
+	It is maintained by Stéphane Sire at EPFL.</p>		
+</body>
+</html>

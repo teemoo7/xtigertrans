@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xt="http://wam.inrialpes.fr/xtiger" xml:lang="en" lang="en">
+	<head>
+		<title>Persons-Tasks</title>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+	  	<meta name="description" content="pv"/>
+		<meta name="keywords" content="pv"/>
+		<meta name="template_id" content="amaya-pv-en-0.1"/>
+		
+		<style type="text/css">
+			*{
+			border:0px;
+			padding:0px;
+			}
+
+			h3{
+			margin:0px;
+			padding:0px;
+			color:#5B8554;
+			}
+
+			h4{
+			margin:0px;
+			margin-top:5px;
+			color:#5B8554;
+			}
+
+			.person{
+			/*float:left;*/
+			margin-right:10px;
+			background-color:#94BD7C;
+			padding:5px;
+			}
+			.person h2{
+			background-color:#5B8554;
+			color:#FFF;
+			display:none;
+
+			}
+
+			.end{
+			clear:both;
+			}
+
+			.action{
+			clear:both;
+			}
+
+			#persons_tasks{
+
+
+			}
+
+			.person_tasks{
+			border:1px solid #5B8554;
+			margin:10px;
+			margin-bottom:10px;
+			background-color:#B1E395;
+			padding:10px;
+
+			}
+
+			.participating_meeting{
+			/*float:left;
+			clear:right;*/
+			margin-top:5px;
+			border-left:1px solid black;
+			padding-left:10px;
+			}
+			
+		</style>
+		
+	</head>
+	<body>
+	
+		<div id="persons_tasks">
+			<xt:repeat label="persons_tasks" minOccurs="1">
+				<xt:component name="person_tasks">
+					<div class="person_tasks">
+						<xt:component name="person">
+							<div class="person">
+								<h2>Person</h2>
+								<xt:use label="first_name" types="string">First_Name</xt:use> <xt:use label="last_name" types="string">Last_Name</xt:use><br/>
+								Affiliation : <xt:use label="affiliation" types="string"></xt:use><br/>
+								Role : <xt:use label="role" types="string"></xt:use><br/>
+							</div>
+						</xt:component>
+						<xt:repeat label="participating_meetings" minOccurs="1">
+							<xt:component name="participating_meeting">
+								<div class="participating_meeting">
+									<h3><xt:use label="title" types="string">TITLE</xt:use></h3>
+									Date : <xt:use label="date" types="string"></xt:use>
+									Location : <xt:use label="location" types="string"></xt:use><br/>
+								
+									<xt:repeat label="actions" minOccurs="1">
+											<xt:component name="action">
+												<div class="action">
+													<h4>Action</h4>
+													Item number : <xt:use label="item_number" types="number">item number</xt:use><br/>
+													Responsible : <xt:use label="responsible" types="string"></xt:use><br/>
+													Deadline : <xt:use label="deadline" types="string">DD/MM/YYYY</xt:use><br/>
+												</div>
+											</xt:component>
+									</xt:repeat>
+								</div>	
+							</xt:component>
+						</xt:repeat>
+						<div class="end"></div>
+					</div>
+				</xt:component>
+			</xt:repeat>
+			
+		</div>
+	
+	</body>
+</html>

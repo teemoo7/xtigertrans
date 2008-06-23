@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:xt="http://wam.inrialpes.fr/xtiger" xml:lang="en">
+	<head>
+		<title>Fichier de transformation XTigerTrans pour visualiser des templates XTiger</title>
+		<link rel="stylesheet" href="template.css" type="text/css"></link>
+		<script type="text/javascript" src="interactive.js"></script>		
+		<script type="text/javascript">
+		   <![CDATA[
+			function initializeMe() {
+				document.xTigerPostGenerationCallBack = initializeDynamicTreeView;  // viewerApp Convention
+			}
+		   	window.addEventListener('load', initializeMe, false);
+			]]>
+		</script>
+	</head>
+	<body>
+		<h1>Fichier de transformation XTigerTrans pour visualiser des templates XTiger</h1>
+		<p>Pour creer un tel fichier, il faut creer une structure d'arbre (pas de foret :o ), la racine de l'arbre doit avoir un attribut "class" qui 
+		doit correspondre a l'element que l'on veut integrer ( use, component, repeat, option, string, number, boolean pour l'instant).La racine doit etre un
+		fils direct de la balise body.</p>
+		<h1>Transformation du component</h1>	
+		<div class='component'>
+			<div style='position:relative; left:0px;'>
+				<img src="images/component.png" />
+			</div>
+			<div style='position:relative; right:0px; left:25px; top:-23px;'>
+				#content
+			</div>
+		</div>
+		<h1>Transformation du Use</h1>
+		<div class='use'>
+			<div style='position:relative; left:0px;'>
+				<img src="images/use.png" />
+			</div>
+			<div style='position:relative; right:0px; left:25px; top:-23px;'>
+				<div class='loop'>
+					<span class='unSelected' onclick='showOnglet("#types", this);'>
+						#types
+					</span>
+					
+				</div>
+				<div >
+				<span class='loop'>
+					<div class='#types' style='display:none;'>
+						#typeStruct
+					</div>
+				</span>
+				</div>
+			</div>
+		</div>
+		<h1>Transformation de l'Option</h1>
+		<div class='option'>
+			<div style='position:relative; left:0px;'>
+				<img src="images/option2.png" />
+			</div>
+			<div class='optionTemplate' style='position:relative; right:0px; left:25px; top:-23px;'>
+				#content
+			</div>
+		</div>
+		<h1>Transformation du Repeat</h1>
+		<div class='repeat'>
+			<div style='position:relative; left:0px;'>
+				<img src="images/repeat2.png" />
+			</div>
+			<div class="repeatTemplate" style='position:relative; right:0px; left:25px; top:-23px;'>
+				#content
+			</div>
+		</div>
+		<h1>Transformation du bag</h1>
+		<div class='bag'>
+			<div class='loop'>
+				#types
+			</div>
+		</div>
+		<h1>Langage cible</h1>
+		<div class='anyElement'>a abbr acronym address applet area b base basefont bdo big blockquote body br button caption center cite code col colgroup dd del dir div dfn dl dt em fieldset font form frame frameset h1 h2 h3 h4 h5 h6 head hr html i iframe img input ins isindex kbd label legend li link map menu meta noframes noscript object ol optgroup option p param pre q s samp script select small span strike strong style sub sup table tbody td textarea tfoot th thead title tr tt u ul var xmp</div>
+		<h1>Transformation des types redéfinies</h1>
+		<div class='typesStructs'>
+		</div>
+	</body>
+</html>

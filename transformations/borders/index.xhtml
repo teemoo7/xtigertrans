@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:xt="http://wam.inrialpes.fr/xtiger" xml:lang="en">
+	<head>
+		<link rel="stylesheet" href="template.css" type="text/css"></link>
+		<title>Fichier de transformation XTigerTrans pour visualiser des templates XTiger</title>
+	</head>
+	<body>
+		<h1>Fichier de transformation XTigerTrans pour visualiser des templates XTiger</h1>
+		<p>Pour creer un tel fichier, il faut creer une structure d'arbre, 
+		la racine de l'arbre doit avoir un attribut "class" qui doit correspondre a l'element 
+		que l'on veut integrer ( use, component, repeat, option, string, number, boolean pour l'instant).
+		La racine doit etre un fils direct de la balise body.</p>
+		
+			<div class='component' >
+				<div class='componentName'>
+					#name
+				</div>
+				<div class='componentContent'>
+					#content
+				</div>
+			</div>
+			<div class='use'>
+				<span class='useLabel'>
+					#label
+				</span>
+				<div>
+					#content
+				</div>
+				<select class='loop'>
+					<option >
+						#types
+					</option>
+				</select>
+				<span class='loop'>
+					<div class='#types'>
+						#typeStruct
+					</div>
+				</span>
+			</div>
+			
+			<div class='option'>
+				<div class='optionLabel'>
+					#label
+				</div>
+				<div class='optionContent'>
+					#content
+				</div>
+			</div>
+			<div class='repeat'>
+				<div class='repeatLabel'>
+					#label
+				</div>
+				<div class='repeatContent'>
+					#content
+				</div>
+			</div>
+			<div class='bag'>
+				<div class='loop'>
+					#types
+				</div>
+			</div>
+			
+			<span class='anyElement'>a abbr acronym address applet area b base basefont bdo big blockquote body br button caption center cite code col colgroup dd del dir div dfn dl dt em fieldset font form frame frameset h1 h2 h3 h4 h5 h6 head hr html i iframe img input ins isindex kbd label legend li link map menu meta noframes noscript object ol optgroup option p param pre q s samp script select small span strike strong style sub sup table tbody td textarea tfoot th thead title tr tt u ul var xmp</span>
+			<span class='typesStructs'>
+				<span class='span'>
+					<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />span
+				</span>
+			</span>
+	</body>
+</html>
