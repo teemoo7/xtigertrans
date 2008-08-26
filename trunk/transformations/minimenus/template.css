@@ -12,10 +12,16 @@ body {
 	padding: 2px;
 }
 
+.typeComponents { margin-right: 10px; }
+
 .use {	
 	border: 2px solid yellow;
 	margin: 2px;
 	padding: 2px;
+}
+
+.optional {
+	border: 2px solid yellow;	
 }
 
 .bag {
@@ -35,10 +41,11 @@ body {
 	margin: 5px;
 	padding: 5px;
 }
-
+.span{
+color:red;
+}
 .string{
-color:gray;
-font-size: small;
+color:orange;
 }
 .boolean{
 color:green;

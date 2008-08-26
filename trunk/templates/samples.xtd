@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+ xmlns:xt="http://ns.inria.org/xtiger" xml:lang="en" lang="en">
+<head>
+  <title>Sample XTiger template file</title>
+  <xt:head version="1.0" templateVersion="1.0">
+    <xt:component name="book">
+			<p>Book title : <xt:use types="string" label="book_title">input book title here</xt:use></p>
+		  <p>Book author : <xt:use types="string" label="book_author">input book author here</xt:use></p>
+    </xt:component>
+    <xt:component name="date">
+			<xt:use types="number" label="a_day">xx</xt:use> / <xt:use types="number" label="a_month">yy</xt:use> / <xt:use types="number" label="a_year">zzzz</xt:use>
+	</xt:component>
+
+  </xt:head>
+	<style type="text/css">
+	.legend {
+		color: gray;
+		font-style: italic;
+	}
+	</style>
+</head>
+
+<body>
+	<h1>Sample XTiger template file</h1>
+	<p>This document contains different cases of XTiger elements.</p>
+	
+	<h2>Pure xt:use of basic Xtiger types</h2>	
+	<p class="legend">xt:use of a string or number basic type, no target language markup.</p>
+	
+	<xt:use types="string number" label="a_fragment">input a string or number here</xt:use>
+	
+	<h2>Mixed xt:use of basic or target language types</h2>
+		<p class="legend">xt:use of a basic or target language data types, mixed with target language presentation markup.</p>
+	
+  	<p>Name : <xt:use types="span string" label="a_name">input person's name here</xt:use></p>
+  	<p>Age : <xt:use types="number" label="a_age">xx</xt:use></p>
+
+	<h2>Pure and mixed xt:use of a constructed type</h2>
+	<p class="legend">xt:use of a component type declared in the XTiger head section. The first one without target language presentation markup, the second one mixed with target presentation markup.</p>
+	
+	<xt:use types="book" label="some_book_title">
+	</xt:use>
+
+	<h2>xt:repeat of a constructed type</h2>
+	<p class="legend">Same example as above but within a xt:repeat.</p>
+	
+	<xt:repeat label="my_library_collection" minOccurs="1" maxOccurs="*">
+		<xt:use types="book" label="some_book_title">
+		</xt:use>
+	</xt:repeat>
+
+	<h2>Optional xt:use of a constructed type</h2>
+	
+	<xt:use types="book" label="some_book_title" option="unset"/>	
+
+	<h2>xt:bag with target language types</h2>
+	
+	<xt:bag types="p h1 book" label="some_fragments">
+    <p>First paragraph of section ...</p>
+  </xt:bag>
+	
+	<hr/>
+	
+	<p>Last update : <xt:use types="date" label="some_creation_date"/></p>
+</body>
+</html>

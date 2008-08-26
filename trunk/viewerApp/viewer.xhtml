@@ -31,7 +31,7 @@ Contributors:
 				'TEMPLATE_FEEDBACK_ID' : document.getElementById('titleUrl'),
 				'FRAME_ID' : document.getElementById('container')
 			}			
-			controller = new viewerApp("../transformations", "../templates", hooks);
+			controller = new viewerApp("../transformations/", "../templates/", hooks);
 		}
 		
 		function submitPage () {
@@ -56,7 +56,25 @@ Contributors:
 			hooks['FRAME_ID'].setAttribute('src', 'intro.xhtml');
 		  	this.hooks['TEMPLATE_FEEDBACK_ID'].firstChild.nodeValue = '...';			
 		}
-	
+		
+		function setPreferences () {
+			var n = document.getElementById('templateRepos');
+			n.value = controller.templatePath;
+			n = document.getElementById('viewRepos');
+			n.value = controller.viewPath;
+			var lowerdiv = document.getElementById('container');
+			lowerdiv.style.top = "15em";			
+		}		
+
+		function savePreferences () {
+			var n = document.getElementById('templateRepos');
+			var tpath = n.value;
+			n = document.getElementById('viewRepos');
+			var vpath = n.value;
+			var lowerdiv = document.getElementById('container');
+			lowerdiv.style.top = "8em";
+			controller.setContainerPaths(vpath, tpath);
+		}	
 		window.addEventListener('load', initializeMe, false);
 		]]>
 	</script>
@@ -74,13 +92,29 @@ Contributors:
 		        <label>Page shortcut : 
 					<select id='templatesList' onchange='updateSelectedTemplate()'>
 					</select>
-				</label>		
+				</label>
+				<input type='button' value="Preferences" onclick="setPreferences();"/>
 		        <label style="position: absolute; right: 30px">View with : 
 					<select id='transfosList'>
 					</select>
 				</label>		
 			</p>
-	        <p id="titleUrl">...</p>
+	        <p id="titleUrl" class="single-line">...</p>			
+			<div id="preferences">
+				<p>
+			        <label>Template repository : 
+						<input id='templateRepos' type='text' name='templateRepos' maxlength='50' value=""/>
+					</label>
+				<p>
+				</p>
+			        <label>Transformations repository : 
+						<input id='viewRepos' type='text' name='viewRepos' maxlength='50' value=""/>
+					</label>
+				</p>
+				<p class="single-line">
+					<input type='button' value="Ok" onclick="savePreferences();"/>
+				</p>
+			</div>
 	    </form>
 	</div>
     <iframe id="container" src="intro.xhtml">

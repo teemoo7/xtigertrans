@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xt="http://wam.inrialpes.fr/xtiger" xml:lang="en" lang="en">
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+		<title>DIDACTIC - Thématiques</title>
+		<style type="text/css">
+			html, body {
+				margin: 5px;
+			}
+			.titre {
+				border:1px solid #000000;
+				text-align:center;
+				margin:5px;
+			}
+			.description_situation {
+				border:1px solid #000000;
+				margin:5px;
+			}
+			.activite_analyse {
+				border:1px solid #000000;
+				margin:5px;
+			}
+			.nouvelles_pratiques {
+				border:1px solid #000000;
+				margin:5px;
+			}
+			.situation {
+				border:1px solid #FFA500;
+				margin:10px;
+			}
+			.nouvelle_pratique {
+				border:1px solid #FFA500;
+				margin:10px;
+			}
+			.idees_nouvelles_pratiques {
+				border:1px solid #FFA500;
+				margin:10px;
+			}
+		</style>
+		<xt:head version="0.8" templateVersion="1.0">
+			<!-- ***********************************************  Bloc situations  ************************************************************************ -->
+			<xt:component name="situation">
+				<div class="situation">Auteur :
+					<xt:use label="nom_auteur" types="string" option="set">Auteur</xt:use>
+					<br/>
+					<xt:use label="domaine" types="string" option="set">Domaine d'enseignement</xt:use>
+					<br/>
+					<xt:use label="type_activite" types="string" option="set">Type d'activités pédagogique (cours, séminaires, TP,...)</xt:use>
+					<br/>
+					<xt:use label="niveau" types="string" option="set">Niveau d'enseignement</xt:use>
+					<br/>
+					<xt:use label="nombre_etudiants" types="string" option="set">Nombre d'étudiants</xt:use>
+					<br/>
+					<xt:use label="scenario_pedagogique" types="scenario_pedagogique" option="set"/>
+					<xt:use label="Evenements" types="evenements" option="set"/>
+				</div>
+			</xt:component>
+			<!-- *********************************************** Bloc idee_nouvelle_pratique  ************************ -->
+			<xt:component name="nouvelles_pratiques">
+				<div class="nouvelles_pratiques">
+					<br/>
+					<xt:use label="auteurnp" types="string" option="set">Auteur</xt:use>
+					<br/>
+					<xt:use label="domainnp" types="string" option="set">Domaine d'enseignement</xt:use>
+					<br/>
+					<xt:use label="type_activitynp" types="string" option="set">Type d'activités pédagogique (cours, séminaires, TP,...)</xt:use>
+					<br/>
+					<xt:use label="niveaunp" types="string" option="set">Niveau d'enseignement</xt:use>
+					<br/>
+					<xt:use label="pistes" types="pistes" option="set"/>
+				</div>
+			</xt:component>
+			<!-- ************************************** Bloc Scenario pédagogique  ********************************* -->			
+			<xt:component name="scenario_pedagogique">
+				<div class="scenario_pedagogique">
+					<h4>Scenario pédagogique </h4>
+					<xt:use label="Objectifs" types="string" option="set">Objectifs ou compétences visés</xt:use>
+					<xt:use label="Activites" types="string" option="set">Activités</xt:use>
+					<xt:use label="Evaluation" types="string" option="set">Evaluation</xt:use>
+				</div>
+			</xt:component>
+			<!-- ********************************************* Bloc Evènements  ************************************ -->			
+			<xt:component name="evenements">
+				<div class="Evenements">
+					<h4>Evènements</h4>
+					<xt:use label="Experience vecue" types="string" option="set">Expérience vécue</xt:use>
+					<xt:use label="Discussion" types="string" option="set">Discussion (questions et pistes suggérées)</xt:use>
+				</div>			
+			</xt:component>
+			<!-- ************************************** Bloc activité   ************************************************************************************** -->
+			<xt:component name="activite_analyse">
+				<div class="activite_analyse">
+					<h2>Activité soutenant l'analyse</h2>
+					<br/>
+					<xt:use label="methode" types="string" option="set">Méthode utilisée</xt:use>
+					<br/>
+					<xt:use label="ressources" types="string" option="set">Ressources utilisées</xt:use>
+					<br/>
+					<xt:use label="processus" types="string" option="set">Description du processus</xt:use>
+					<br/>
+				</div>
+			</xt:component>
+			<!-- ********************************************* Bloc Pistes  ***************************************** -->			
+			<xt:component name="pistes">
+				<div class="pistes">
+					<h4>Pistes</h4>
+					<xt:repeat label="pistes">
+						<xt:use label="piste" types="piste"/>
+					</xt:repeat>
+				</div>			
+			</xt:component>
+			<!-- ********************************************* Bloc Piste  ****************************************** -->			
+			<xt:component name="piste">
+				<xt:use label="piste" types="string">Piste 1</xt:use>
+				<br/>
+			</xt:component>
+			<!-- ***********************************************  Bloc Description des situations ******************************************************** -->
+			<xt:component name="description_situation">
+				<div class="description_situation">
+					<h2>Description de la ou les situations originales </h2>
+					<xt:repeat label="situations">
+						<xt:use label="situation" types="situation"/>
+					</xt:repeat>
+				</div>			
+			</xt:component>
+			<!-- ***********************************************  Bloc Nouvelles pratiques envisagees  ******************************************************* -->			
+			<xt:component name="nouvelles_pratiques_envisagees">
+				<div class="nouvelles_pratiques">
+					<h2>Nouvelles pratiques envisagées</h2>
+					<xt:repeat label="pratiques">
+						<xt:use label="nouvelles_pratiques" types="nouvelles_pratiques"/>
+					</xt:repeat>
+				</div>
+			</xt:component>
+			<!--***********************************************************************************************************************************************-->			
+		</xt:head>
+	</head>
+	<body>
+		<!-- ***********************************************  Présentation   ******************************************************************************** -->
+		<h1 class="title">
+			<xt:use label="titre" types="string">Thématiques traitées</xt:use>
+		</h1>
+		<h2>
+			<xt:use label="nom_cop" types="string">Nom de la COP</xt:use>
+		</h2>
+		<h2>
+			<xt:use label="date_reunion" types="string">Date de la réunion</xt:use>
+		</h2>
+		<h2>
+			<xt:use label="auteur_document" types="string">Auteur du document</xt:use>
+		</h2>
+		<!-- ***********************************************  Bloc Description des situations ******************************************************** -->
+		<xt:use label="description_situation" types="description_situation" option="set"/>
+		<!-- ***********************************************  Bloc activite_analyse ******************************************************** -->
+		<xt:use label="activite_analyse" types="activite_analyse" option="set"/>
+		<!-- ***********************************************  Bloc Nouvelles pratiques ***************************************************************** -->
+		<xt:use label="nouvelles_pratiques" types="nouvelles_pratiques_envisagees" option="set"/>
+	</body>
+</html>
