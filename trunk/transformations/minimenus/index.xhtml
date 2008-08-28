@@ -3,6 +3,19 @@
 	<head>
 		<link rel="stylesheet" href="template.css" type="text/css"></link>
 		<title>XTigerTrans template transformation file</title>
+		<script type="text/javascript">
+			// Set this to try a callback transformation function
+			document.xTigerTransformationCallback = function (p, n) { 
+				alert ('Cur path = ' + p.join('/') + ' Node = ' + n.tagName); 
+				var test = document.createTextNode(' hello ! ');
+				n.appendChild (test);
+			}
+			
+			// Set this to try a callback function called at the end
+			document.xTigerPostGenerationCallBack = function (parent, document) {
+				alert('Transformation Terminated');
+			}		
+		</script>
 	</head>
 	<body>
 		<h1>XTigerTrans template transformation file</h1>
@@ -65,7 +78,7 @@
 						
 		<h2>String</h2>
 		
-		<p class="xtt:string"><span class='string'>string</span></p>
+		<p class="xtt:string"><span class='string xtt:callback'>string</span></p>
 
 		<h2>Number</h2>
 

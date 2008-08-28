@@ -68,8 +68,11 @@ viewerApp.prototype = {
 			body.appendChild(parentNode);						
 			// Render the view
 			var structure = new xtigerTrans(xmlDoc.getDocument(), this.curTransfo);
-//			structure.xtigerToHTML(currentNode, parentNode);
-			structure.xtigerToHTML(parentNode);
+			if (d.xTigerTransformationCallback) {
+				structure.xtigerToHTML(parentNode, d.xTigerTransformationCallback);
+			} else {
+				structure.xtigerToHTML(parentNode);
+			}
 			// Give control to transformation post-generation callback if any
 			if (d.xTigerPostGenerationCallBack) {
 				d.xTigerPostGenerationCallBack(parentNode, d);

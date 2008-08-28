@@ -1,16 +1,41 @@
+// ***** BEGIN LICENSE BLOCK *****
+// This file is part of "xtigertrans".
+// Copyright (c) 2007 EPFL and contributors.
+// All rights reserved.
 //
-// Javascript library developped to transform XTiger documents according to XHTML template documents
+// "xtigertrans" is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License version 2 as published by
+// the Free Software Foundation.
+// 
+// "xtigertrans" is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with "xtigertrans"; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// Initially started for the DocReuse project of the MEDIA Research Group (GRVA) at EPFL, Switzerland by Jonathan Wafellman
-// Modified by Stephane Sire from MEDIA Research Group
+// ***** END LICENSE BLOCK *****
 //
-
-// TODO: 
-// - 1 ou 2 exemples de templates différents
-// - xtt:loop, xtt:loop-native, xtt:loop-declared  (dans changeUse)
-// - introduire des callbacks dans les templates, faire un exemple avec des selecteurs qui hide/show les typeComplexes dans xtt:loop-declared
-// - preciser dans la doc le fait que #content ne peut pas etre melange avec d'autre texte (utiliser des <span>)
-
+// Javascript library to transform XTiger documents according to XHTML template documents
+//
+// Initial version for the DocReuse project of the MEDIA Research Group (GRVA) at EPFL, Switzerland 
+//
+// Contributors :
+// Jonathan Wafellman
+// Stephane Sire 
+//
+// Todo : 
+// - xtt:loop, xtt:loop-native, xtt:loop-constructed  (dans changeUse)
+// - #content and #typeStrucs cannot be mixed with other text in the same PCDATA
+// - callback function could be extended to have an extra "component" parameter that could be 
+//   a pointer to the XTiger node beeing transformed in the source tree (or in the acquired 
+//   component structures), this requires to add it to the path
+// - callCallback is called just in changeUse, maybe this is not enough (?)
+// - callback function could be extended to be passed user data extracted from the transformation
+//   definition file for instance :
+//   class="xtt:callback-some-text" would call function (path, cur, "some-text") 
 
 /*********************************************/
 /*                                           */
@@ -26,6 +51,8 @@ xtigerTrans.isType = new RegExp('#types');
 xtigerTrans.isTypeStruct = new RegExp('#typeStruct');
 xtigerTrans.isContent = new RegExp("#content");
 xtigerTrans.isContentEnd = new RegExp("^[\s\n\f\r\t\v]*#content[\s\n\f\r\t\v]*$"); // tests if #content is the only word present in a node
+
+xtigerTrans.callbackMarker = "xtt:callback";
 
 xtigerTrans.builtinTypes = {
 		"xtt:use"				: "useStruct",
@@ -139,7 +166,7 @@ xtigerTrans.dom = {
 		var n;
 		while(n = node.firstChild){
 			node.removeChild(n);
-			node.parentNode.insertBefore(n, node);		
+			node.parentNode.insertBefore(n, node);
 		}
 		node.parentNode.removeChild(node);
 	}
@@ -185,12 +212,20 @@ xtigerTrans.Component.prototype = {
 	},
 	
 	getClone : function () {
-		return this.tree.cloneNode(true);
+		var res = this.tree.cloneNode(true);
+		return res;
 	},
-	
+		
+	// unused : was used for the cache system with innerHTML
 	setSource : function (val) {
 		this.str = val;
 	},
+
+	// unused : was used for the cache system with node cloning
+	setTree : function (root) {
+		this.tree = root;
+	}
+	
 }
 
 /*****************************************************/
@@ -201,12 +236,10 @@ xtigerTrans.Component.prototype = {
 
 // Object that serve to manipulate the xtiger document, assign methods and structures
 // doc is the XTiger document we work on, it serves to acquire all the structures of the document (ie : component)
-function xtigerTrans(doc, url){	 
+function xtigerTrans(doc, url) {	 
 	
 	this.unionList = new Object(); // type list of the union. any, anyElement, anyComponent, anySimple has been set in too
-	this.componentLib = new Object(); // component structures. It serves to insert them where it is ask to			
-	
-	this.callBack = callBack; // Default callback method to be called after each transformation of an XTiger node
+	this.componentLib = new Object(); // component structures. It serves to insert them where it is ask to	
 		
 	this.acquireTransformationStruct (url); // acquisition of the transformation structure defined in the XTiger transformation doc at URL
 	this.acquireComponentStructs (doc); // aquisition of the components of the specified document
@@ -395,6 +428,27 @@ xtigerTrans.prototype = {
 	/*                                                */
 	/**************************************************/	
 	
+	genPathEntryFor : function (xtigerTag, node, extraType) {
+		var l = node.getAttribute('label');
+		var res = xtigerTag;
+		if (l || extraType) {
+			res = res + "[";
+		}
+		if (l) {
+			res = res + '@label="' + l + '"'; 			
+			if (extraType) {
+				res = res + ',';
+			}
+		} 
+		if (extraType) {
+			res = res + '@currentType="' + extraType + '"';
+		}
+		if (l || extraType) {
+			res = res + "]";
+		}
+		return res;
+	},
+	
 	repeatTypes : function (source, dumplings) {
 		var res = "";
 		for(var inc2 = 0; inc2 < dumplings.length; inc2++) {
@@ -403,6 +457,7 @@ xtigerTrans.prototype = {
 		return res;
 	},
 
+	// deprecated : was used in first version to generate components for types
 	repeatTypeStructs : function (source, dumplings) {
 		var res = "";
 		for(var inc2 = 0; inc2 < dumplings.length; inc2++){
@@ -411,7 +466,7 @@ xtigerTrans.prototype = {
 		}
 		return res;
 	},
-	
+			
 	nodeIsAnXTigerSubTree : function (aNode) {
 		var res = false;
 		if (aNode.nodeType == Node.ELEMENT_NODE) { // checks if there are more XTiger nodes to tranform 
@@ -453,7 +508,7 @@ xtigerTrans.prototype = {
 		return res;
 	},
 
-	finishSubstitution : function (aNode, templateNode) {
+	finishSubstitution : function (aNode, templateNode, curPath) {
 		var contentNode = this.findContentNode (templateNode);	// FIXME: it may be possible to use a cached templateNode object ?
 		if (contentNode) {
 			var followup = new Array ();
@@ -466,7 +521,7 @@ xtigerTrans.prototype = {
 			var cur;
 			while (cur = followup.shift()) {
 				if (this.nodeIsAnXTigerSubTree (cur)) {
-					this.xtigerToHTML (cur);
+					this.xtigerToHTMLiter (cur, curPath);
 				}
 			}
 		} else {
@@ -493,9 +548,43 @@ xtigerTrans.prototype = {
 				}
 			}
 		}
+	},
+	
+	// Copy n - 1 times the children of tree into itself
+	duplicateChildren : function (tree, n) {
+		var count = tree.childNodes.length;
+		for (var i = 0; i < (n - 1); i++) {
+			for (var j = 0; j < count; j++) {
+				tree.appendChild (tree.childNodes[j].cloneNode(true));
+			}
+		}
+	},
+	
+	findTypeStructNodesIter : function (top, accu) {
+		for (var i = 0; i < top.childNodes.length; i++) {
+			var cur = top.childNodes[i];						
+			if ((Node.TEXT_NODE == cur.nodeType) && xtigerTrans.isTypeStruct.test(cur.nodeValue)) {
+				accu.push (cur);
+			} else if (Node.ELEMENT_NODE == cur.nodeType) {
+				this.findTypeStructNodesIter (cur, accu);
+			}		
+		}
+	},
+	
+	// Iterates on root and each time it finds a TEXT_NODE with value #typeStructs 
+	// injects a current tree from the trees in structs in place of it
+	replaceTypeStructWithSubTrees : function (root, structs) {
+		var pointers = new Array ();
+		this.findTypeStructNodesIter (root, pointers);
+		if (pointers.length != structs.length) {
+			alert ('DEBUG: not enough structures to fill #typeStructs !');
+		}
+		for (var i = 0; i < pointers.length; i++ ) {
+			xtigerTrans.dom.replaceNodeByChildOf (pointers[i], structs[i]);
+		}
 	},	
 		
-	substituteLoopNodes : function (root, types) {
+	substituteLoopNodes : function (srcXtigerNode, root, types, curPath) {
 		var loopNodes = new Array();
 		this.findLoop(root, loopNodes);			// find the nodes where we loop and stocks it in an array
 
@@ -503,33 +592,60 @@ xtigerTrans.prototype = {
 
 			var pattern = loopNodes[inc].innerHTML; // serializes
 			if (xtigerTrans.isType.test(pattern)) {
-				var aStr = this.repeatTypes (pattern, types); // duplicates with type names			
+				
+				var aStr = this.repeatTypes (pattern, types); // duplicates with type names
 				loopNodes[inc].innerHTML = aStr; // converts it back to a tree
 			} else if (xtigerTrans.isTypeStruct.test(pattern)) {
-				// prepares an array of tansformed type structures
+				
+				// prepares an array of tansformed type structures to inject them in #typeStrucs
 				var structs = new Array ();
-				for (var inc2 = 0; inc2 < types.length; inc2++) { // Loops on the types for this XTiger element				
+				var pivot;
+				var parent;
+				for (var inc2 = 0; inc2 < types.length; inc2++) { // loops on allowed types 
 					var curComponentForType = this.componentLib[types[inc2]];
-					if (curComponentForType.isNative()) {
-						structs.push (curComponentForType);	// native components are ready for display				
+					if (curComponentForType.isNative()) {						
+						structs.push (curComponentForType.getClone ());						
 					} else {
-						if (! curComponentForType.hasBeenExpanded()) { // dynamic computation : only recompute if necessary
-							var pivot = document.createElement('div'); // to contain the component during its transformation
-							var parent = curComponentForType.getClone();
-							pivot.appendChild (parent);
-							this.xtigerToHTML (parent);
-							curComponentForType.setSource (pivot.innerHTML);
-						}
-						structs.push (curComponentForType);					
+						pivot = document.createElement('div'); // simulate a "body" container
+						parent = curComponentForType.getClone ();
+						pivot.appendChild (parent);
+						var saved = curPath.pop ();
+						var name = this.genPathEntryFor('use', srcXtigerNode, types[inc2]);
+						curPath.push(name);
+						this.xtigerToHTMLiter (parent, curPath, true);
+						curPath.pop();
+						curPath.push (saved)						
+						structs.push (pivot); 
+							// stacks pivot because component generation has moved up the tree
+							// (ie the component in parent has been replaced by its children)
 					}
-				}		
-				var aStr = this.repeatTypeStructs (pattern, structs); // duplicates with structures
-				loopNodes[inc].innerHTML = aStr; // converts it back to a tree
+				}	
+				this.duplicateChildren (loopNodes[inc], structs.length)
+				this.replaceTypeStructWithSubTrees (loopNodes[inc], structs);
 			}		
 		  // 3. replacement of "#typeStruct" is okay, now replaces the 'loop' node with its children
-		  xtigerTrans.dom.replaceWithChildren (loopNodes[inc]);  										
+		  xtigerTrans.dom.replaceWithChildren (loopNodes[inc]);
 		}
-	},	
+	},		
+	
+	// The xtt_guard is used to avoid calling the callback several times as the tree is beeing built
+	callCallback : function (parent, curPath) {
+		if (! this.callback) { return };
+		for (var i = 0; i < parent.childNodes.length; i++) { 			
+			var cur = parent.childNodes[i];						
+			if (! cur.xtt_guarded) {
+				if ((cur.nodeType == Node.ELEMENT_NODE) && cur.hasAttribute('class')) {
+					var str = cur.getAttribute('class');
+					if (-1 != str.indexOf(xtigerTrans.callbackMarker)) {
+						this.callback.call (this, curPath, cur);
+					}
+				}
+				// recurse
+				cur.xtt_guarded = true; // sets a guard to avoid further recursions
+				this.callCallback (cur, curPath);
+			}
+		}
+	},
 		
 	/***********************************************************/
 	/*                                                         */
@@ -542,31 +658,48 @@ xtigerTrans.prototype = {
 	currentNode is the node in the orginal xtiger document, that won't change
 	newNode is the node of the new tree we will display
 	*/
-	xtigerToHTML : function (aNode) {
-		if(aNode.nodeType == Node.ELEMENT_NODE) { // only operates on element nodes, if not, we don't change it and keep it	
+	xtigerToHTML : function (aNode, callback) {
+		this.callback = callback;
+		this.xtigerToHTMLiter (aNode, [], true);
+	},
+		
+	xtigerToHTMLiter : function (aNode, curPath) {
+		if (aNode.nodeType == Node.ELEMENT_NODE) { // only operates on element nodes, if not, we don't change it and keep it	
 			switch (aNode.localName) { 
 			// looks for the element tagName, if it is a xtiger node, we launch the modification, if not, continue recursively		
 				// case "option":
 				// 	this.changeOption(currentNode,newNode);
 				// 	break;			
 				case "component":
-					this.changeComponent(aNode);
+					this.changeComponent(aNode, curPath);
 					break;
 
 				case "repeat":
-					this.changeRepeat(aNode);
+				  var name = this.genPathEntryFor('repeat', aNode);
+					curPath.push(name);				
+					this.changeRepeat(aNode, curPath);
+					curPath.pop();					
 					break;
 
 				case "use":
-					this.changeUse(aNode);
+			  	var name = this.genPathEntryFor('use', aNode);
+					curPath.push(name);				
+					this.changeUse(aNode, curPath); // si pas réel xtt_local_path sur fils 1
+					curPath.pop();
 					break;
 
 				case "bag":
-					this.changeBag(aNode);
+			  	var name = this.genPathEntryFor('bag', aNode);
+					curPath.push(name);								
+					this.changeBag(aNode, curPath);
+					curPath.push(name);													
 					break;
 
 				default: // not a xtiger element, for each child, we will launch the function xtigerToHTML
-					this.continueWithChildOf(aNode); // continue the recursion on the children
+		  		var name = aNode.tagName;
+					curPath.push(name);
+					this.continueWithChildOf(aNode, curPath); // continue the recursion on the children
+					curPath.pop();					
 			}
 		}
 	},
@@ -577,22 +710,22 @@ xtigerTrans.prototype = {
 	- ignores the other children
 	Two passes algorithm because calls to xtigerToHTML may change the structure of the tree while iterating
 	*/
-	continueWithChildOf : function (aNode) {
+	continueWithChildOf : function (aNode, curPath) {
 		var process = new Array();
 		for (var i = 0; i < aNode.childNodes.length; i++) { 
 			if (this.nodeIsAnXTigerSubTree (aNode.childNodes[i])) {
 				  process.push (aNode.childNodes[i]);
 			}
 		}
-		var cur;
+		var cur;		
 		while (cur = process.shift()) {
-			this.xtigerToHTML(cur);
+			this.xtigerToHTMLiter(cur, curPath);
 		}
 	},
 
 	// Transformation of a component element
 	// Works in parallel on the XTiger document and the HTML representation
-	changeComponent : function (componentNode) {
+	changeComponent : function (componentNode, curPath) {
 
 		// 1. Extracts data from original XTiger node	
 		var label = componentNode.getAttributeNode('name').value;	
@@ -604,12 +737,11 @@ xtigerTrans.prototype = {
 		template.innerHTML = stringStruct;
 
 		// 3. Completes the template and replaces the xt:component with it
-		this.finishSubstitution (componentNode, template);
-		this.callBack (componentNode, template);	// in fact original has been replaced into copy with the childs of container
+		this.finishSubstitution (componentNode, template, curPath);
 	},
 
 	// Transformation of a repeat element
-	changeRepeat : function (repeatNode) {
+	changeRepeat : function (repeatNode, curPath) {
 
 		// 1. Extracts data from original XTiger node	
 		var label = repeatNode.getAttributeNode('label').value;
@@ -635,13 +767,12 @@ xtigerTrans.prototype = {
 		template.innerHTML = stringStruct;
 
 		// 3. Completes the template and replaces the xt:repeat with it
-		this.finishSubstitution (repeatNode, template);
-		this.callBack(repeatNode, template);	// in fact original has been replaced into copy with the childs of container
+		this.finishSubstitution (repeatNode, template, curPath);
 	},
 
 	// Transformation of a use element
 	// FIXME : handle 'option' attribute => utiliser un template "externe" pour intégrer le résultat de la transformation du xt:use 
-	changeUse : function (useNode) {
+	changeUse : function (useNode, curPath) {
 		// 1. Selects target visualization template
 		var optional = useNode.getAttributeNode('option');
 		var stringStruct = optional ? this.optionTemplate : this.useTemplate;
@@ -659,17 +790,17 @@ xtigerTrans.prototype = {
 		// 4. Calculates allowed types and substitute them inside the loops (place holders) of the instantiated visualization template	
 		var types = useNode.getAttributeNode('types').value.split(" "); // creates an array that contains all the types of the use element	
 		types = this.unionToType(types);	
-	  this.substituteLoopNodes (container, types);
+	  this.substituteLoopNodes (useNode, container, types, curPath);
+		this.callCallback (container, curPath) 
 
 		// 5. Replaces original xt:use node with the content of the fake template
 		xtigerTrans.dom.replaceNodeByChildOf (useNode, container);
-		this.callBack (useNode, container);
 	},
 
 	// Transformation of a bag element - same as changeUse except for computation of types
 	// FIXME: rewrite computation of types
 	// FIXME: factorize code with changeUse
-	changeBag : function (bagNode) {
+	changeBag : function (bagNode, curPath) {
 		// 1. Selects target visualization template	
 		var stringStruct = this.bagTemplate;
 
@@ -696,7 +827,7 @@ xtigerTrans.prototype = {
 			typeString = typeString.substring(1, typeString.length-1);							//delete the first and the last white space
 			typeIn = typeString.split(" ");														//make an array from the string containing the types
 			types = types.concat(typeIn);														//Concatenate the types and include
-		}catch(err){
+		} catch(err) {
 		}
 		try{																					//exclude not mandatory
 			var typeString = " " + types.join(" ") + " ";										//put the value of types in a string with withe space at the beginning and at the end for the following regular expression
@@ -710,23 +841,9 @@ xtigerTrans.prototype = {
 		}catch(err){
 		}	
 		types = this.unionToType(types);														//translate union into simple types
-	  this.substituteLoopNodes (container, types);
+	  this.substituteLoopNodes (bagNode, container, types, curPath);
 
 		// 5. Replaces original xt:use node with the content of the fake template
 		xtigerTrans.dom.replaceNodeByChildOf (bagNode, container);
-		this.callBack (bagNode, container);
 	}			
 }
-
-/************/
-/*          */
-/*  FIXME   */
-/*          */
-/************/
-
-// Default callback function to be developped by the user
-// - currentNode is the current xtiger node
-// - actualNode is the root node of the generated representation
-function callBack(currentNode, actualNode){
-}
-

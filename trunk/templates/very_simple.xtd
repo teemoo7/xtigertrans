@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+ xmlns:xt="http://ns.inria.org/xtiger" xml:lang="en" lang="en">
+<head>
+  <title>Sample XTiger template file</title>
+  <xt:head version="1.0" templateVersion="1.0">
+    <xt:component name="book">
+			<p>Book title : <xt:use types="string" label="a_book_title">input book title here</xt:use></p>
+		  <p>Book author : <xt:use types="string" label="a_book_author">input book author here</xt:use></p>
+		  <p>Book year : <xt:use types="year" label="a_book_year"/></p>
+    </xt:component>
+    <xt:component name="year">
+			<xt:use types="string" label="a_year">1984</xt:use>
+		</xt:component>
+  </xt:head>
+	<style type="text/css">
+	.legend {
+		color: gray;
+		font-style: italic;
+	}
+	</style>
+</head>
+
+<body>
+	<h1>Sample XTiger template file</h1>
+	<p>This document contains different cases of XTiger elements.</p>
+	
+	<h2>Pure xt:use of basic Xtiger types</h2>	
+	<p class="legend">xt:use of a string or a number.</p>
+	
+	<xt:use types="string number" label="a_string">input a string  here</xt:use>
+	
+	<h2>xt:use of a constructed type</h2>
+		
+	<xt:use types="book" label="one_book_title"></xt:use>
+
+	<h2>xt:repeat of a xt:use of a string</h2>
+	
+	<xt:repeat label="a_collection" minOccurs="1" maxOccurs="*">
+		<xt:use types="string" label="a_string"/>
+	</xt:repeat>
+	
+</body>
+</html>
