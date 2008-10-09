@@ -45,7 +45,7 @@ viewerApp.prototype = {
 
 	continueVisualization : function () {
 		// Delete all children of the transformation body
-		var d = this.hooks['FRAME_ID'].contentDocument;
+		var d = this.hooks['FRAME_ID'].contentDocument; 
 		var body = d.getElementsByTagName('body')[0];
 		var cur;
 		while (cur = body.firstChild) {
@@ -54,6 +54,7 @@ viewerApp.prototype = {
 				body.removeChild(cur);
 			}
 		}
+				
 		// Load the xtiger document to render and replace the transformation body by its content
 		// FIXME: ca serait bien d'insérer les style sheets importés par ce document dans la frame ?
     var e = this.hooks['FORM_FIELD_ID'];
@@ -67,7 +68,8 @@ viewerApp.prototype = {
 			var parentNode = currentNode.cloneNode(true);
 			body.appendChild(parentNode);						
 			// Render the view
-			var structure = new xtigerTrans(xmlDoc.getDocument(), this.curTransfo);
+			var structure = new xtigerTrans();   
+			structure.initTransformerFromURL (xmlDoc.getDocument(), this.curTransfo);
 			if (d.xTigerTransformationCallback) {
 				structure.xtigerToHTML(parentNode, d.xTigerTransformationCallback);
 			} else {
