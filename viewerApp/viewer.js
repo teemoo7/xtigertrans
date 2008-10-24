@@ -8,6 +8,65 @@
 
 */
 
+// Main controller	     
+var controller;
+var hooks = null;			
+
+function initializeMe () {
+	if (hooks) 	return;
+	hooks = {
+		'FORM_FIELD_ID' : document.getElementById('formUrl'),
+		'VIEW_SELECTOR_ID' : document.getElementById('transfosList'),
+		'TEMPLATE_SELECTOR_ID' : document.getElementById('templatesList'),
+		'TEMPLATE_FEEDBACK_ID' : document.getElementById('titleUrl'),
+		'FRAME_ID' : document.getElementById('container')
+	}			
+	controller = new viewerApp("../transformations/", "../templates/", hooks);
+}
+
+function submitPage () {
+	var e = this.hooks['FORM_FIELD_ID'];
+	if (e.url.value != '') {
+		controller.startVisualization();
+		hooks['FRAME_ID'].addEventListener('load', frameLoaded, false);
+	}
+	return false; // prevent default action			
+}
+
+function frameLoaded () {
+	hooks['FRAME_ID'].removeEventListener('load', frameLoaded, false);
+	controller.continueVisualizationII();
+//	controller.continueVisualization();
+}
+
+function updateSelectedTemplate () {
+	controller.updateSelectedTemplate();
+}
+
+function resetView () {
+	hooks['FRAME_ID'].setAttribute('src', 'intro.xhtml');
+  	this.hooks['TEMPLATE_FEEDBACK_ID'].firstChild.nodeValue = '...';			
+}
+
+function setPreferences () {
+	var n = document.getElementById('templateRepos');
+	n.value = controller.templatePath;
+	n = document.getElementById('viewRepos');
+	n.value = controller.viewPath;
+	var lowerdiv = document.getElementById('container');
+	lowerdiv.style.top = "15em";			
+}		
+
+function savePreferences () {
+	var n = document.getElementById('templateRepos');
+	var tpath = n.value;
+	n = document.getElementById('viewRepos');
+	var vpath = n.value;
+	var lowerdiv = document.getElementById('container');
+	lowerdiv.style.top = "8em";
+	controller.setContainerPaths(vpath, tpath);
+}
+
 function viewerApp (vpath, tpath, hooks) {
 		this.hooks = hooks;
 		this.viewPath = null;
@@ -42,6 +101,44 @@ viewerApp.prototype = {
 		this.hooks['FRAME_ID'].setAttribute('src', this.curTransfo);
 		// Control should be passed to transformCurTemplate next...
 	},
+	
+	continueVisualizationII : function () {
+		// Delete all children of the transformation body
+		var d = this.hooks['FRAME_ID'].contentDocument; 
+		var body = d.getElementsByTagName('body')[0];
+		var cur;
+		while (cur = body.firstChild) {
+			// peut-être préserver certains noeud (class="preserve") et insérer le doc dans un placeholder ?
+			if ((cur.nodeType == Node.ELEMENT_NODE) || (cur.nodeType == Node.TEXT_NODE)) {
+				body.removeChild(cur);
+			}
+		}
+				
+		// Load the xtiger document to render and replace the transformation body by its content
+		// FIXME: ca serait bien d'insérer les style sheets importés par ce document dans la frame ?
+    var e = this.hooks['FORM_FIELD_ID'];
+    var url = xTigerUtils.makeURLForFile(e.url.value, this.PROXY);
+		var xmlDoc = new xTigerUtils.XMLDocLoader();
+		xmlDoc.load(url);
+		if (xmlDoc.isInError()) {
+			this.log(xmlDoc.error, 1);			
+		}	else {
+			var currentNode = xmlDoc.getDocument().getElementsByTagName('body')[0];
+			var parentNode = currentNode.cloneNode(true);
+			body.appendChild(parentNode);						
+			// Render the view
+			var transformer = new xtigerTrans(this.curTransfo, d.xTigerTransformationCallback);
+			var structure = new xtigerIterator (xmlDoc.getDocument(), transformer);
+			structure.transform (parentNode);
+			// not that d.xTigerTransformationCallback and d.xTigerPlantEditor may be not defined
+			// Give control to transformation post-generation callback if any
+			if (d.xTigerPostGenerationCallBack) {
+				d.xTigerPostGenerationCallBack(parentNode, d);
+			}
+			// Feedback
+			this.log(e.url.value, 0);
+		}
+	},	
 
 	continueVisualization : function () {
 		// Delete all children of the transformation body
@@ -69,12 +166,9 @@ viewerApp.prototype = {
 			body.appendChild(parentNode);						
 			// Render the view
 			var structure = new xtigerTrans();   
-			structure.initTransformerFromURL (xmlDoc.getDocument(), this.curTransfo);
-			if (d.xTigerTransformationCallback) {
-				structure.xtigerToHTML(parentNode, d.xTigerTransformationCallback);
-			} else {
-				structure.xtigerToHTML(parentNode);
-			}
+			structure.initTransformerFromURL (xmlDoc.getDocument(), this.curTransfo);               			
+			structure.xtigerToHTML(parentNode, d.xTigerTransformationCallback, d.xTigerPlantEditor);
+			// not that d.xTigerTransformationCallback and d.xTigerPlantEditor may be not defined
 			// Give control to transformation post-generation callback if any
 			if (d.xTigerPostGenerationCallBack) {
 				d.xTigerPostGenerationCallBack(parentNode, d);

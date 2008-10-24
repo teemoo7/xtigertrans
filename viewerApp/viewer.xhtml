@@ -13,70 +13,12 @@ Contributors:
 <head>
 	<title>xTigerTrans viewer application</title>
 	<link rel="stylesheet" href="viewer.css" type="text/css"></link>
+	<script type="text/javascript" src="../xtiger/xtigercore.js"></script>
 	<script type="text/javascript" src="../xtiger/xtigertrans.js"></script>
 	<script type="text/javascript" src="../xtiger/utilities.js"></script>
 	<script type="text/javascript" src="viewer.js"></script>
 	<script type="text/javascript">
-	   <![CDATA[
-		// Main controller	     
-		var controller;
-		var hooks = null;			
-		
-		function initializeMe () {
-			if (hooks) 	return;
-			hooks = {
-				'FORM_FIELD_ID' : document.getElementById('formUrl'),
-				'VIEW_SELECTOR_ID' : document.getElementById('transfosList'),
-				'TEMPLATE_SELECTOR_ID' : document.getElementById('templatesList'),
-				'TEMPLATE_FEEDBACK_ID' : document.getElementById('titleUrl'),
-				'FRAME_ID' : document.getElementById('container')
-			}			
-			controller = new viewerApp("../transformations/", "../templates/", hooks);
-		}
-		
-		function submitPage () {
-			var e = this.hooks['FORM_FIELD_ID'];
-			if (e.url.value != '') {
-				controller.startVisualization();
-				hooks['FRAME_ID'].addEventListener('load', frameLoaded, false);
-			}
-			return false; // prevent default action			
-		}
-
-		function frameLoaded () {
-			hooks['FRAME_ID'].removeEventListener('load', frameLoaded, false);
-			controller.continueVisualization();
-		}
-
-		function updateSelectedTemplate () {
-			controller.updateSelectedTemplate();
-		}
-		
-		function resetView () {
-			hooks['FRAME_ID'].setAttribute('src', 'intro.xhtml');
-		  	this.hooks['TEMPLATE_FEEDBACK_ID'].firstChild.nodeValue = '...';			
-		}
-		
-		function setPreferences () {
-			var n = document.getElementById('templateRepos');
-			n.value = controller.templatePath;
-			n = document.getElementById('viewRepos');
-			n.value = controller.viewPath;
-			var lowerdiv = document.getElementById('container');
-			lowerdiv.style.top = "15em";			
-		}		
-
-		function savePreferences () {
-			var n = document.getElementById('templateRepos');
-			var tpath = n.value;
-			n = document.getElementById('viewRepos');
-			var vpath = n.value;
-			var lowerdiv = document.getElementById('container');
-			lowerdiv.style.top = "8em";
-			controller.setContainerPaths(vpath, tpath);
-		}	
 		window.addEventListener('load', initializeMe, false);
-		]]>
 	</script>
 </head>
 <body>
