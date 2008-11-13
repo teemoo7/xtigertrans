@@ -53,7 +53,7 @@ function setPreferences () {
 	n.value = controller.templatePath;
 	n = document.getElementById('viewRepos');
 	n.value = controller.viewPath;
-	var lowerdiv = document.getElementById('container');
+	var lowerdiv = document.getElementById('frameContainer');
 	lowerdiv.style.top = "15em";			
 }		
 
@@ -62,7 +62,7 @@ function savePreferences () {
 	var tpath = n.value;
 	n = document.getElementById('viewRepos');
 	var vpath = n.value;
-	var lowerdiv = document.getElementById('container');
+	var lowerdiv = document.getElementById('frameContainer');
 	lowerdiv.style.top = "8em";
 	controller.setContainerPaths(vpath, tpath);
 }
