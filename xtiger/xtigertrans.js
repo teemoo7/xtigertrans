@@ -160,7 +160,7 @@ xtigerTrans.prototype = {
 
 		// registers the specific structured for the target language elements
 		for(name in this.typesStructs){	
-			window.console.log('Defining native type ' + name + '=' + this.typesStructs[name]);
+			window.console.log('Defining native type ' + name + '=' + this.typesStructs[name].innerHTML);			
 			iterator.defineType(name, new xtigerIterator.Component(xtigerIterator.NATIVE, this.typesStructs[name]));
 		}
 
@@ -189,7 +189,7 @@ xtigerTrans.prototype = {
 							var basicStruct = xtigerTrans.basicTypes[curType];
 							if (basicStruct) {
 								// extracts structure (as DOM tree) for basic XTiger types
-								this.iterator.defineType(basicStruct, xtigerIterator.Component(xtigerIterator.NATIVE, pointer.childNodes[inc]));
+								this.iterator.defineType(basicStruct, new xtigerIterator.Component(xtigerIterator.NATIVE, pointer.childNodes[inc]));
 							} else if (curType == "xtt:targetElements") {
 									this.typesClass = pointer.childNodes[inc].textContent.split(" "); // takes all the types
 							} else if (curType == "xtt:targetTemplates") {
@@ -294,9 +294,9 @@ xtigerTrans.prototype = {
 				}   
 				if (! done) {
 					// recurse
-					cur.xtt_guarded = true; // sets a guard to avoid further recursions
 					this.callCallback (cur);
 				}
+				cur.xtt_guarded = true; // sets a guard to avoid further recursions
 			}
 		}
 	},
@@ -461,8 +461,9 @@ xtigerTrans.prototype = {
 					var curComponentForType = this.iterator.getComponentForType(types[j]);
 					if (curComponentForType) {
 						if (curComponentForType.isNative()) {
-							generated = curComponentForType.getClone ();						
-							this.callCallback (generated);        
+							generated = curComponentForType.getClone ();	
+							window.console.log("Generating native type for ", srcXtigerNode.getAttribute('label'));
+							//this.callCallback (generated);        
 							// calls callback because generation of the native component is terminated now
 							xtigerIterator.dom.replaceNodeByChildOf (placeholders[j], generated);
 						} else {
@@ -513,7 +514,8 @@ xtigerTrans.prototype = {
 	},
 	
 	finishIteratedTypeGeneration : function (kind, xtigerSrcNode, container, types) {
-		this.callCallback (container);
+		window.console.log("Call callbacks");
+		this.callCallback (container);		
 	},
 	
 }	
