@@ -470,7 +470,11 @@ xtigerIterator.prototype = {
 	changeUse : function (xtigerSrcNode) {  
 		var accu = [];				
 		var container = document.createElement('div');
-		var kind = xtigerSrcNode.getAttribute('option') || 'use';	
+		var kind = 'use';
+		// Attribute option may be null or take the value'set', but not 'option' which is deprecated
+		if (xtigerSrcNode.getAttribute('option')) {
+			kind = 'option';
+		}
 		// creates an array that contains all the types of the use element			
 		var types = xtigerSrcNode.getAttribute('types').split(" "); 		
 		types = this.unionToType(types);		
