@@ -233,7 +233,7 @@ xtigerTrans.prototype = {
 		if (l) {
 			res = res + '@label="' + l + '"'; 			
 			if (extraType) {
-				res = res + ',';
+				res = res + ' and ';
 			}
 		} 
 		if (extraType) {
