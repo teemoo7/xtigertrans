@@ -1,0 +1,61 @@
+.compBox, .useBox, .optionBox, .bagBox, .repeatBox {
+	border: 1;          
+	text-align: left;
+}
+
+.compHeader, .useHeader, .optionHeader, .bagHeader, .repeatHeader {
+	font-weight: bolder;   
+	color: dodgerblue;
+}
+
+.compGutter, .useGutter, .optionGutter, .bagGutter, .repeatGutter {
+	width: 20px;
+}
+
+.compGutter {
+	background-color: lavenderblush;
+}           
+
+.useGutter {
+	background-color: lightgreen;
+}           
+
+.optionGutter {
+	background-color: powderblue;
+}           
+
+.bagGutter {
+	background-color: sandybrown;
+}           
+        
+.repeatGutter {
+	background-color: steelblue;
+}
+
+.compContent, .useContent, .optionContent, .bagContent, .repeatContent {    
+	padding: 5px;
+}
+         
+.icon {
+	padding-right: 10px ;
+}             
+
+.types {
+	display: none;
+}        
+
+#dialogBox {
+	border: solid 1px black;
+	position: fixed;
+	right: 20px;
+	top: 100px; 
+	width: 200px;
+	height: 200px;	    
+	padding: 10px;
+}     
+
+#msgBox {
+	font-style: italic;  
+	color: skyblue;   	
+}
+

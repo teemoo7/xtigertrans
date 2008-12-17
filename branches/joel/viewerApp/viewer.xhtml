@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- 	
+
+xTigerTrans viewerApp : viewer.xhtml
+
+Contributors:
+- Jonathan Wafellman (EPFL)
+- Stephane Sire (EPFL)
+
+-->
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:xt="http://wam.inrialpes.fr/xtiger" xml:lang="en">
+<head>
+	<title>xTigerTrans viewer application</title>
+	<link rel="stylesheet" href="viewer.css" type="text/css"></link>
+	<script type="text/javascript" src="../xtiger/xtigercore.js"></script>
+	<script type="text/javascript" src="../xtiger/xtigertrans.js"></script>
+	<script type="text/javascript" src="../xtiger/utilities.js"></script>
+	<script type="text/javascript" src="viewer.js"></script>
+	<script type="text/javascript">
+		window.addEventListener('load', initializeMe, false);
+	</script>
+</head>
+<body>
+	<div id="formular">
+	    <form id="formUrl" action="javascript:alert('Oops, something went wrong !')" onsubmit="return submitPage();">
+			<p>
+		        <label>Page : 
+					<input id='url' type='text' name='url' maxlength='100' value="" />
+				</label>
+		        <span style="position: absolute; right: 30px; margin-left: 5px"><input type='submit' value="Visualize"/><input type='reset' onclick='resetView()' /></span>
+			</p>
+			<p>
+		        <label>Page shortcut : 
+					<select id='templatesList' onchange='updateSelectedTemplate()'>
+					</select>
+				</label>
+				<input type='button' value="Preferences" onclick="setPreferences();"/>
+		        <label style="position: absolute; right: 30px">View with : 
+					<select id='transfosList'>
+					</select>
+				</label>		
+			</p>
+	        <p id="titleUrl" class="single-line">...</p>			
+			<div id="preferences">
+				<p>
+			        <label>Template repository : 
+						<input id='templateRepos' type='text' name='templateRepos' maxlength='50' value=""/>
+					</label>
+				<p>
+				</p>
+			        <label>Transformations repository : 
+						<input id='viewRepos' type='text' name='viewRepos' maxlength='50' value=""/>
+					</label>
+				</p>
+				<p class="single-line">
+					<input type='button' value="Ok" onclick="savePreferences();"/>
+				</p>
+			</div>
+	    </form>
+	</div>
+	<div id="frameContainer">	                      	
+    <iframe id="container" src="intro.xhtml"></iframe>
+	</div>
+</body>
+</html>

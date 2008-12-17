@@ -1,0 +1,28 @@
+.icon {
+	padding: 5px;
+}
+
+.typeStructIterator {
+	display: inline; 
+	width: 100%
+}
+
+.iteratedTypeCell {
+	vertical-align: top;
+}
+
+.repeatContent{
+	border-width: 2px;
+	border-color: blue;
+	border-style: solid;
+	padding: 2px;
+	margin-bottom:2px;	
+}
+
+.bagContent{
+	border-width: 2px;
+	border-color: green;
+	border-style: solid;
+	padding: 2px;
+	margin-bottom:2px;	
+}

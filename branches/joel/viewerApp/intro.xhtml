@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<title>xTigerTrans viewerApp explanation file</title>
+	<style>
+		body {
+			margin: 5%;
+			padding: 1em 2em;
+			border: 2px solid lightgray;
+		}
+		h1 {
+			text-align: center;
+		}
+	</style>	
+</head>
+
+<body>
+	<h1>xTigerTrans Viewer Application</h1>
+	<p>This is a Firefox application that runs on versions 2 and 3 beta. 
+	It illustrates the use of the "xtigertrans.js" library</p>
+	<ul>
+		<li>Page : enter a file URL for an XTiger file to visualize (or use Page shortcut)</li> 
+		<li>Page shortcut : select directly a predefined XTiger template file to visualize</li> 
+		<li>View with : select a transformation to apply to generate the view</li> 
+	</ul>
+	<p>Press "Visualize" to render the XTiger template file with the selected transformation</p>
+	<p>NOTE: you can use the application directly from a local volume (document URL starting
+	with "file://"), or you can copy it and launch it from a Web server. In that later case,
+	the Web server must enable PHP for the proxy to fetch documents from external servers.</p>
+	<p>By default template files listes in the "Page shortcut" popup menu are stored in the 
+	"templates" folder.</p>
+	<p>By default transformations that appear in the right popup menu are stored as sub-folders within 
+	the "transformations" folder. Each transformation sub-folder must define the transformation 
+	in an "index.xhtml" file</p>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:xt="http://wam.inrialpes.fr/xtiger" xml:lang="en">
+<head>
+	<link rel="stylesheet" href="template.css" type="text/css"></link>
+	<title>XTigerTrans template transformation file</title>
+</head>
+<body>
+	<h1>XTigerTrans template transformation file</h1>
+	
+	<h2>Component</h2>
+	
+	<div class="xtt:component">		
+		<fieldset>
+			<legend>#name</legend>
+			#content
+		</fieldset>
+	</div>
+	
+	<h2>Use</h2>
+			
+	<div class="xtt:use">					
+		<img class='icon' src="images/use.png"/>
+		#content
+		<table class="typeStructIterator">
+		<tr>     
+			<td>
+				<div class='xtt:loop'>
+					<div class="iteratedTypeCell">					
+						#typeStruct
+					</div>
+				</div>
+			</td>
+		</tr>
+		</table>
+	</div>
+	
+	<h2>Option</h2>
+	
+	<div class="xtt:option">
+		<img class='icon' src="images/option.png"/>
+		#content
+		<table class="typeStructIterator">
+		<tr>     
+			<td>
+				<div class='xtt:loop'>
+					<div class="iteratedTypeCell">					
+						#typeStruct
+					</div>
+				</div>
+		 	</td>
+		</tr>
+		</table>
+		<br/>
+	</div>	
+
+	<h2>Bag</h2>
+
+	<div class="xtt:bag">
+		<div class="bagContent">
+			#content
+		</div>
+		<p>Bag types : 
+			<span class='xtt:loop'>
+				#types
+			</span>		
+		</p>
+	</div>
+
+	<h2>Repeat</h2>
+	
+	<div class="xtt:repeat">			
+		<img class='icon' src="images/repetition.png"/><span> (#minOccurs</span> / <span>#maxOccurs) </span>
+		<div class='repeatContent'>
+			#content
+		</div>
+	</div>
+	
+	<h2>String</h2>
+	
+	<p>default</p>
+	
+	<h2>Number</h2>
+
+	<p>default</p>
+
+	<h2>Boolean</h2>
+
+	<p>default</p>
+
+	<h2>Target language elements</h2>
+
+	<h3>Name of target elements filtered by this view</h3>
+					
+	<p class="xtt:targetElements">a abbr acronym address applet area b base basefont bdo big blockquote body br button caption center cite code col colgroup dd del dir div dfn dl dt em fieldset font form frame frameset h1 h2 h3 h4 h5 h6 head hr html i iframe img input ins isindex kbd label legend li link map menu meta noframes noscript object ol optgroup option p param pre q s samp script select small span strike strong style sub sup table tbody td textarea tfoot th thead title tr tt u ul var xmp</p>		
+
+	<h3>Special templates for the filtered elements</h3>		
+			
+	<div class="xtt:targetTemplates">
+		
+		<p>None</p>
+		
+	</div>
+
+	<h4>Others</h4>
+	
+	<p>By default all the other filtered elements are rendered by a span.</p>	
+					
+</body>
+</html>
