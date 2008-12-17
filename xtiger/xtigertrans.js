@@ -421,7 +421,7 @@ xtigerTrans.prototype = {
 		}
 	},
 		
-	// Finds the node with class name xtt:loop
+	// Finds the node with class name xtt:loop (or xtt:loop_preserve)
 	findLoop : function (node, loopNodes) {	 //the root node of the sub-tree we look for loops, and the array to put them
 		var listeNode = new Array();															//algorithm that use a stack, this array represents the stack
 		listeNode.push(node);																	//at the beginning push the first node
@@ -429,7 +429,7 @@ xtigerTrans.prototype = {
 			var currentNode = listeNode.pop();													//take the node on the stack
 			for(var i = 0; i < currentNode.childNodes.length; i++){						//for each child
 				if(currentNode.childNodes[i].nodeType ==1){									//verify it is an element
-					if(currentNode.childNodes[i].className == "xtt:loop"){						//if the class attribute of the child is loop
+					if(currentNode.childNodes[i].className.indexOf("xtt:loop") > -1){						//if the class attribute of the child is loop
 						loopNodes.push(currentNode.childNodes[i]);							//add it to the list of nodes
 					}else{
 						listeNode.push(currentNode.childNodes[i]);							//add the node to the stack
@@ -441,8 +441,7 @@ xtigerTrans.prototype = {
 
 	substituteLoopNodes : function (srcXtigerNode, container, types, accu) {
 		var loopNodes = new Array();
-		this.findLoop(container, loopNodes); // locates xtt:loop in container
-
+		var loopNodeHasToBePreserved = this.findLoop(container, loopNodes); // locates xtt:loop in container and returns if the loop node must be preserved or removed
 		for(var i = 0; i < loopNodes.length; i++) {
 
 			var pattern = loopNodes[i].innerHTML;			
@@ -483,8 +482,10 @@ xtigerTrans.prototype = {
 					accu.splice(0,0,'OPAQUE'); // inserts 'OPAQUE' at the beginning
 				}
 			}		
-		  // now replaces 'xtt:loop' loop node with its children
-		  xtigerIterator.dom.replaceWithChildren (loopNodes[i]);
+		  if (!(loopNodes[i].className == 'xtt:loop_preserve')) {
+			// now replaces 'xtt:loop' loop node with its children
+			xtigerIterator.dom.replaceWithChildren (loopNodes[i]);
+		  }
 		}
 	},			   
 	
