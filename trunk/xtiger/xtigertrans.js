@@ -482,7 +482,7 @@ xtigerTrans.prototype = {
 					accu.splice(0,0,'OPAQUE'); // inserts 'OPAQUE' at the beginning
 				}
 			}		
-		  if (!(loopNodes[i].className == 'xtt:loop_preserve')) {
+		  if (!(loopNodes[i].className.indexOf('xtt:loop_preserve') != -1)) {
 			// now replaces 'xtt:loop' loop node with its children
 			xtigerIterator.dom.replaceWithChildren (loopNodes[i]);
 		  }
