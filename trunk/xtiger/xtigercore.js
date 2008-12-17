@@ -35,10 +35,10 @@
 /*********************************************/   
 
 xtigerIterator.VERSION = 0.3;
-xtigerIterator.nsXTiger_deprecated = "http://ns.inria.org/xtiger";  // deprecated
-xtigerIterator.nsXTiger = "http://wam.inrialpes.fr/xtiger";
+xtigerIterator.nsXTiger_deprecated = "http://wam.inrialpes.fr/xtiger";  // deprecated
+xtigerIterator.nsXTiger = "http://ns.inria.org/xtiger";
 xtigerIterator.nsXHTML = "http://www.w3.org/1999/xhtml"
-xtigerIterator.isXTiger = /<[^>]*[(component)(use)(repeat)(option)]/;	// detects an XTiger node
+xtigerIterator.isXTiger = /<[^>]*[(component)(use)(repeat)]/;	// detects an XTiger node
 
 /****************************************************************************/
 /*                                                                          */
