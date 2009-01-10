@@ -37,8 +37,8 @@
 xtigerIterator.VERSION = 0.3;
 xtigerIterator.nsXTiger_deprecated = "http://wam.inrialpes.fr/xtiger";  // deprecated
 xtigerIterator.nsXTiger = "http://ns.inria.org/xtiger";
-xtigerIterator.nsXHTML = "http://www.w3.org/1999/xhtml"
-xtigerIterator.isXTiger = /<[^>]*[(component)(use)(repeat)]/;	// detects an XTiger node
+xtigerIterator.nsXHTML = "http://www.w3.org/1999/xhtml";
+xtigerIterator.isXTiger = /<[^>]*[(component)(use)(repeat)(attribute)]/;	// detects an XTiger node
 
 /****************************************************************************/
 /*                                                                          */
@@ -99,11 +99,11 @@ xtigerIterator.dom = {
 
 				case Node.ELEMENT_NODE:
 					var nameSpace = node.namespaceURI; // checks namespace to know if we can use innerHTML directly or if we have to extract it
-					if (nameSpace == xtigerIterator.nsXHTML) {	// it is a xhtml node
+//					if (nameSpace == xtigerIterator.nsXHTML) {	// it is a xhtml node
 						aStr = xtigerIterator.dom.extractInner(node, false)
-					} else {
+/*					} else {
 						aStr = node.innerHTML;
-					}
+					}*/
 					break;
 
 				default: aStr = '';
@@ -171,6 +171,48 @@ xtigerIterator.dom = {
 			node.parentNode.insertBefore(n, node);
 		}
 		node.parentNode.removeChild(node);
+	},
+	
+	getXPath : function(node, path, nsPrefixes) {
+		path = path || [];
+		var prefix = null;
+		for (prefix in nsPrefixes)
+			if (nsPrefixes[prefix] == node.namespaceURI)
+				break;
+				
+		if (node.nodeName == 'body') {
+			path.push(prefix+':body');
+			return path;
+		}
+		if(node.parentNode) {
+			path = xtigerIterator.dom.getXPath(node.parentNode, path, nsPrefixes);
+		}
+		  
+		if(node.previousSibling) {
+			var count = 1;
+			var sibling = node.previousSibling
+			do {
+				if(sibling.nodeType == 1 && sibling.nodeName == node.nodeName) {count++;}
+				sibling = sibling.previousSibling;
+			} while(sibling);
+			//if(count == 1) {count = null;}
+		} else if(node.nextSibling) {
+			var sibling = node.nextSibling;
+			do {
+				if(sibling.nodeType == 1 && sibling.nodeName == node.nodeName) {
+					var count = 1;
+					sibling = null;
+				} else {
+					var count = 1;//null;
+					sibling = sibling.previousSibling;
+				}
+			} while(sibling);
+		}
+		
+		if(node.nodeType == 1) {
+			path.push(prefix+":"+node.localName.toLowerCase() + (node.id ? "[@id='"+node.id+"']" : count > 0 ? "["+count+"]" : ''));
+		}
+		return path;
 	}
 }	
 			
@@ -294,7 +336,7 @@ xtigerIterator.prototype = {
 
 			var typeIn = unionList[inc].getAttributeNode('include').value.split(" ");			//we put the list of types to include
 			this.unionToType(typeIn);															//to be sure that the union contains only simple types and no other unions
-			var typeString = " " + typeIn.join(" ") + " ";										//prepair to remove the types to exclude, because we use a regular expression
+			var typeString = " " + typeIn.join(" ") + " ";										//prepare to remove the types to exclude, because we use a regular expression
 
 			try{																				//attribute exclude not mandatory
 				var typeDel = unionList[inc].getAttributeNode('exclude').value.split(" ");		//put in the array all the types to exclude
@@ -375,13 +417,13 @@ xtigerIterator.prototype = {
 					break;
 
 				case "repeat":
-					this.transformer.saveContext (aNode);
+					this.transformer.saveContext (aNode, null, true);
 					this.changeRepeat(aNode);
 					this.transformer.restoreContext (aNode);
 					break;
 
 				case "use": 
-					this.transformer.saveContext (aNode);
+					this.transformer.saveContext (aNode, null, true);
 					this.changeUse(aNode); // si pas réel xtt_local_path sur fils 1
 					this.transformer.restoreContext (aNode);
 					break;
@@ -390,6 +432,10 @@ xtigerIterator.prototype = {
 					this.transformer.saveContext (aNode);				
 					this.changeBag(aNode); 
 					this.transformer.restoreContext (aNode);					
+					break;
+				
+				case "attribute":
+					this.changeAttribute(aNode);
 					break;
 
 				default: // not a xtiger element, for each child, we will launch the function transform
@@ -432,7 +478,7 @@ xtigerIterator.prototype = {
 			nodes.shift();
 			var saved = this.transformer.popContext (); // removes the top context (xt:use or xt:bag)
 			while (cur = nodes.shift()) { 
-				this.transformer.saveContext (cur, true); // set top context to the current expanded type
+				this.transformer.saveContext (cur, true, false); // set top context to the current expanded type
 				this.transformIter(this.transformer.getNodeFromOpaqueContext(cur));
 				this.transformer.restoreContext(cur, true);
 			}
@@ -494,34 +540,46 @@ xtigerIterator.prototype = {
 		types = this.unionToType(types);														// translate list of type into list of types without union
 		try{																												//include not mandatory
 			var typeIn = bagNode.getAttribute('include').split(" ");				//take the list of types to include
-			typeIn = this.unionToType(typeIn);													//translate union into types
-			var typeString = " " + typeIn.join(" ") + " ";										//create a string containing the types to include separated by " "
+			typeIn = this.unionToType(typeIn).join(" ");													//translate union into types
+			/*var typeString = " " + typeIn.join(" ") + " ";										//create a string containing the types to include separated by " "
 			for(var inc = 0; inc < types.length;inc ++){										//for each type
 				typeString = typeString.replace(new RegExp(" "+types[inc] + " "), " ");			//delete the type from the string if they are in the attribute types and include
 			}
 			typeString = typeString.substring(1, typeString.length-1);							//delete the first and the last white space
 			typeIn = typeString.split(" ");														//make an array from the string containing the types
-			types = types.concat(typeIn);														//Concatenate the types and include
+			types = types.concat(typeIn);*/														//Concatenate the types and include
 		} catch(err) {
+			typeIn = "";
 		}
 		try{																					//exclude not mandatory
-			var typeString = " " + types.join(" ") + " ";										//put the value of types in a string with withe space at the beginning and at the end for the following regular expression
-			var typeDel = bagNode.getAttribute('exclude').split(" ");				//take the list of types contained in exclude attribute
-			typeDel = this.unionToType(typeDel);												//translate union into types
+			var typeEx = bagNode.getAttribute('exclude').split(" ");
+			typeEx = this.unionToType(typeEx).join(" ");
+			/*var typeString = " " + types.join(" ") + " ";
 			for(var inc2 = 0; inc2< typeDel.length; inc2++){									//for each type in exclude
 				typeString = typeString.replace(new RegExp(" "+typeDel[inc2]+" "), " ");		//delete it if it is present in the list of types
 			}
 			typeString = typeString.substring(1,typeString.length-1);							//delete the first and last white space
-			types = typeString.split(" ");														//put the types in an array
+			types = typeString.split(" ");														//put the types in an array*/
 		}catch(err){
+			typeEx = "";
 		}	
 		types = this.unionToType(types);														//translate union into simple types
 
-		this.transformer.genIteratedTypeBody ('bag', bagNode, container, types);
+		this.transformer.genIteratedTypeBody ('bag', bagNode, container, types, typeIn, typeEx);
 		this.transformer.genIteratedTypeContent ('bag', bagNode, container, accu, types);
     this.transformItems (accu);		
 		this.transformer.finishIteratedTypeGeneration ('bag', bagNode, container, types);		
 		xtigerIterator.dom.replaceNodeByChildOf (bagNode, container);
 
+	},
+	// Transformation of an attribute element
+	changeAttribute : function (attrNode) {
+		var curPath = xtigerIterator.dom.getXPath(attrNode.parentNode, null, this.transformer.nsPrefixes);
+		var container = document.createElement('div');
+		this.transformer.genAttributeBody(attrNode, container);
+		
+		this.transformer.finishAttributeGeneration(attrNode, container.firstChild.nextSibling, curPath);		 
+		
+		xtigerIterator.dom.replaceNodeByChildOf (attrNode, container);
 	}			
 }

@@ -57,7 +57,8 @@ xtigerTrans.builtinTypes = {
 		"xtt:component"	: "componentStruct",
 		"xtt:option"		: "optionStruct",
 		"xtt:repeat"		: "repeatStruct",
-		"xtt:bag"				: "bagStruct"					
+		"xtt:bag"       : "bagStruct",
+		"xtt:attribute" : "attributeStruct"					
 	}
 	
 xtigerTrans.basicTypes = {	// should be aligned with this.unionList["anySimple"] below
@@ -75,6 +76,11 @@ xtigerTrans.basicTypes = {	// should be aligned with this.unionList["anySimple"]
 function xtigerTrans (transfo, callback) {
 	this.transformationSpec = transfo; // memorizes it for forthcoming coupleWithIterator call		
 	this.callback = callback;
+	this.innerUseNodes = new Object();
+	
+	this.nsPrefixes = new Object(); // store the namespace prefixes used in the document
+	this.nsPrefixes.xt = xtigerIterator.nsXTiger; // always map xt to the XTiger Namespace. This avoids deeper changes in the code.
+	this.nsPrefixes.xhtml = "http://www.w3.org/1999/xhtml";
 } 
 
 xtigerTrans.prototype = {
@@ -216,6 +222,9 @@ xtigerTrans.prototype = {
 		this.optionTemplate = transStructs["optionStruct"].innerHTML;
 		this.repeatTemplate = transStructs["repeatStruct"].innerHTML;
 		this.bagTemplate = transStructs["bagStruct"].innerHTML;
+		this.attributeTemplate = transStructs["attributeStruct"].innerHTML;
+		
+		
 	}, 	            
 	                         			 	
 	/**************************************************/
@@ -225,6 +234,7 @@ xtigerTrans.prototype = {
 	/**************************************************/	
 	
 	genPathEntryFor : function (xtigerTag, node, extraType) {
+		extraType = false;
 		var l = node.getAttribute('label');
 		var res = xtigerTag;
 		if (l || extraType) {
@@ -233,7 +243,7 @@ xtigerTrans.prototype = {
 		if (l) {
 			res = res + '@label="' + l + '"'; 			
 			if (extraType) {
-				res = res + ' and ';
+				res = res + '][';
 			}
 		} 
 		if (extraType) {
@@ -242,7 +252,7 @@ xtigerTrans.prototype = {
 		if (l || extraType) {
 			res = res + "]";
 		}
-		return res;
+		return this.getNSPrefix(node.namespaceURI, node.prefix)+":"+res;
 	},
 	
 	// Returns the DOM node that need to be managed which is saved in the 'item' element
@@ -251,19 +261,45 @@ xtigerTrans.prototype = {
 			return item[0];		
 	},
 	
-	saveContext : function (data, isOpaque) {
+	saveContext : function (data, isOpaque, withIndex) {
 		isOpaque = isOpaque || false;
+		withIndex = withIndex || false;
 		var name;
+		var type = null;
 		if (isOpaque) { // treating the expansion of "types" components			
  			// cur[0] is the node to transform
 			// cur[1] is the originating (xtigerSrcNode) xt:use or xt:bag
 			// cur[2] is the name of the type beeing expanded if it is a type expansion
 			name = this.genPathEntryFor(data[1].localName, data[1], data[2]);
+			type = data[1].localName;
 	  } else {
 			// data is simply the xtigerSrcNode
 		  name = this.genPathEntryFor(data.localName, data);
+			type = data.localName;
 		}
+		//if (withIndex && type == 'repeat') {
+		if (type == 'repeat') {
+			this.innerUseNodes[this.context.join('/')+"/"+name] = 1;
+			logging.log('Repeat: '+this.context.join('/')+"/"+name);
+		//} else if (withIndex && type == 'use') {
+		} else if (type == 'use') {
+			logging.log('Use: '+this.context.join('/'));
+			var useNumber = this.innerUseNodes[this.context.join('/')];
+			logging.log('useNumber for '+this.context.join('/')+': '+useNumber);
+			if (useNumber) {
+				if (withIndex) {
+					name += "[" + useNumber + "]";
+					this.innerUseNodes[this.context.join('/')]++;
+				} else {
+					name += "[" + (useNumber-1) + "]";
+				}
+				logging.log('Non-unique use: '+name);		
+			}
+		}
+		
+
 		this.context.push(name);
+		return this.context;
 	},
 	
 	restoreContext : function (data, isOpaque) {
@@ -384,8 +420,45 @@ xtigerTrans.prototype = {
 	},  
 
 	finishRepeatGeneration : function (xtigerSrcNode, container) {		
+		this.callCallback (container);			
 	}, 
-	     		
+	
+	genAttributeBody : function (attrNode, container) {
+		// 1. Selects target visualization template
+		var stringStruct = this.attributeTemplate;
+
+		// 2. Extracts parameters from xt:attribute node and injects them into template
+		var name = attrNode.getAttribute('name');
+		var type = attrNode.getAttribute('type');
+		if (type == null) type = 'string';
+		var use = attrNode.getAttribute('use');
+		if (use == null) use = 'required';
+		var defaultValue = attrNode.getAttribute('default');
+		var fixed = attrNode.getAttribute('fixed');
+		var values = attrNode.getAttribute('values');
+		stringStruct = stringStruct.replace(/#name/g, name);
+		stringStruct = stringStruct.replace(/#type/g, type);
+		stringStruct = stringStruct.replace(/#use/g, use);
+		stringStruct = stringStruct.replace(/#default/g, defaultValue);
+		stringStruct = stringStruct.replace(/#fixed/g, fixed);
+		stringStruct = stringStruct.replace(/#values/g, values);
+
+		
+		var nsPrefix = this.getNSPrefix(xtigerTrans.nsXTiger, 'xt');
+		container.innerHTML = stringStruct.replace("/<"+nsPrefix+":([\w]*)/g", '<$1 xmlns="'+xtigerTrans.nsXTiger+'"').replace("/<\/"+nsPrefix+":([\w]*)/g", '</$1'); // TODO: Handle namespaces correctly
+		container.name = name;
+		container.type = type;
+		container.use = use;
+		container.defaultValue = defaultValue;
+		container.fixed = fixed;
+		container.values = values;
+
+	},
+	    
+	finishAttributeGeneration : function (xtigerSrcNode, container, path) {
+		this.callback.call(this, this.context, container);
+		//this.callCallback(container);
+	},  		
 	/*********************************************/
 	/*                                           */
 	/*	     xt:use and xt:bag generation 	     */
@@ -497,7 +570,7 @@ xtigerTrans.prototype = {
 		return res;
 	},
 		
-	genIteratedTypeBody : function (kind, xtigerSrcNode, container, types) {   
+	genIteratedTypeBody : function (kind, xtigerSrcNode, container, types, typesIncl, typesExcl) {   
 		var template;
 		if ('use' == kind) {
 			template = this.useTemplate;
@@ -506,7 +579,15 @@ xtigerTrans.prototype = {
 		} else {
 			template = this.bagTemplate;
 		}
-		container.innerHTML = this.genBodyFromTemplate (xtigerSrcNode, template); 
+		var nsPrefix = this.getNSPrefix(xtigerIterator.nsXTiger, null, true);
+		if (!nsPrefix) nsPrefix = this.getNSPrefix(xtigerIterator.nsXTiger_deprecated, null, true);
+		var innerHTML = this.genBodyFromTemplate (xtigerSrcNode, template);
+		innerHTML = innerHTML.replace(new RegExp("<"+nsPrefix+":([\\w]*)","g"), '<$1 xmlns="'+xtigerIterator.nsXTiger+'"').replace(new RegExp("<\\/"+nsPrefix+":([\\w]*)","g"), '</$1');
+		if (kind == 'bag') {
+			innerHTML = innerHTML.replace(/#typesExcl/g, typesExcl);
+			innerHTML = innerHTML.replace(/#typesIncl/g, typesIncl);
+		}
+		container.innerHTML = innerHTML;  
 	},	
 	     
 	genIteratedTypeContent	: function (kind, xtigerSrcNode, body, accu, types) { 
@@ -518,4 +599,35 @@ xtigerTrans.prototype = {
 		this.callCallback (container);		
 	},
 	
+	/*
+	 * Registers the namespace of node if it is new and return the corresponding identifier
+	 * which can be used as namespace prefix in XPath
+	 * @param node
+	 * @return Namespace prefix
+	 */
+	getNSPrefix: function(ns, nsPrefix, noInsert) {
+		if (ns == null) ns = 'default';
+		// Check if this Namespace already exists
+		for (var prefix in this.nsPrefixes) {
+			if (this.nsPrefixes[prefix] == ns) {
+				return prefix;
+			}
+		}
+		if (noInsert) return false;
+		
+		// We have to create a new entry for this namespace
+		// Check if a namespace prefix is provided and not yet bound to an other NS
+		if (nsPrefix != null && this.nsPrefixes[nsPrefix] == undefined) {
+			this.nsPrefixes[nsPrefix] = ns;
+			return nsPrefix;
+		} else {
+			// Find a free namespace prefix
+			var nscounter = 1;
+			while (this.nsPrefixes['ns'+nscounter] != undefined) {
+				nscounter++;
+			}	
+			this.nsPrefixes['ns'+nscounter] = ns;
+			return 'ns'+nscounter;
+		}
+	}
 }	
